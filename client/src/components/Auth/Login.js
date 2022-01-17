@@ -31,9 +31,8 @@ function Login() {
 
   const googleSuccess = async (res) => {
     const email = res?.profileObj?.email;
-    setFormData({ ...formDate, email: email });
     try {
-      dispatch(signingoogle(formDate, history));
+      dispatch(signingoogle({ email }, history));
     } catch (error) {
       console.log(error);
     }

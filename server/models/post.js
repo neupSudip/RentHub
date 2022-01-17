@@ -4,13 +4,25 @@ const postSchema = mongoose.Schema({
   creatorName: String,
   creatorId: String,
   creatorType: String,
-  title: String,
-  amount: Number,
+  title: {
+    type: String,
+    trim: true,
+  },
+  amount: {
+    type: Number,
+    trim: true,
+  },
   tags: [String],
-  location: String,
+  location: {
+    type: String,
+    trim: true,
+  },
   negotiable: String,
   image: String,
-  discription: String,
+  discription: {
+    type: String,
+    trim: true,
+  },
   createdAt: {
     type: Date,
     default: new Date(),

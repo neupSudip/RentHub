@@ -36,7 +36,7 @@ module.exports.signin = async (req, res) => {
 
 module.exports.signingoogle = async (req, res) => {
   const { email } = req.body;
-  console.log(email);
+  console.log("email", email);
   try {
     const user = await User.findOne({ email });
 
@@ -88,7 +88,7 @@ module.exports.signup = async (req, res) => {
 
     await temp.save();
 
-    sendEmail(email, hash, result._id);
+    //sendEmail(email, hash, result._id);
 
     res.status(200).json({ result, token });
   } catch (error) {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import FileBase from "react-file-base64";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
+import { useNavigate } from "react-router-dom";
 
 const Form = ({ currentId, setCurrentId }) => {
   const user = JSON.parse(localStorage.getItem("profile"));
@@ -23,6 +24,7 @@ const Form = ({ currentId, setCurrentId }) => {
   );
 
   const dispatch = useDispatch();
+  const history = useNavigate();
 
   useEffect(() => {
     if (post) setPostDate(post);
@@ -49,6 +51,7 @@ const Form = ({ currentId, setCurrentId }) => {
       );
     }
     reset();
+    history("/");
   };
 
   const reset = () => {

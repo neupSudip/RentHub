@@ -1,0 +1,20 @@
+.search-bar {
+  background-image: linear-gradient(
+    rgb(255, 255, 255),
+    rgb(169, 159, 159),
+    rgb(169, 159, 159),
+    rgb(255, 255, 255)
+  );
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-fields {
+  background-color: white;
+}
+.search-bar input {
+  height: 3rem;
+  border-style: none;
+}

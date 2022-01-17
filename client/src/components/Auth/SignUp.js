@@ -62,7 +62,6 @@ function SignUp() {
     e.preventDefault();
     try {
       dispatch(signup(formDate, history));
-      console.log(formDate);
     } catch (error) {
       console.log(error);
     }
