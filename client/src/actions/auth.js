@@ -5,6 +5,7 @@ export const signin = (formData, history) => async (dispatch) => {
     const { data } = await api.signIn(formData);
     dispatch({ type: "AUTH", data });
     history("/");
+    window.location.reload();
   } catch (error) {
     console.log(error);
   }
@@ -15,6 +16,7 @@ export const signingoogle = (formData, history) => async (dispatch) => {
     const { data } = await api.signInGoogle(formData);
     dispatch({ type: "AUTH", data });
     history("/");
+    window.location.reload();
   } catch (error) {
     console.log(error);
   }

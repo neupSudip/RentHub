@@ -20,7 +20,7 @@ const Form = ({ currentId, setCurrentId }) => {
   });
 
   const post = useSelector((state) =>
-    currentId ? state.posts.find((p) => p._id === currentId) : null
+    currentId ? state.posts.userPosts.find((p) => p._id === currentId) : null
   );
 
   const dispatch = useDispatch();

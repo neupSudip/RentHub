@@ -1,20 +1,15 @@
-.search-bar {
-  background-image: linear-gradient(
-    rgb(255, 255, 255),
-    rgb(169, 159, 159),
-    rgb(169, 159, 159),
-    rgb(255, 255, 255)
-  );
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.image {
+  width: 100%;
+  height: 23rem;
 }
 
-.search-fields {
-  background-color: white;
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+  gap: 1rem;
+  text-align: center;
 }
-.search-bar input {
-  height: 3rem;
-  border-style: none;
+
+.card {
+  box-shadow: 1px 1px 1rem 1px rgb(149, 147, 147);
 }

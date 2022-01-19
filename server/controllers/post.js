@@ -3,8 +3,47 @@ const Post = require("../models/post");
 
 module.exports.getPosts = async (req, res) => {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find().sort({ _id: -1 });
     res.status(200).json(posts);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+module.exports.getUserPosts = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const posts = await Post.find({ creatorId: id }).sort({ _id: -1 });
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+module.exports.getPost = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const post = await Post.findById({ _id: id });
+    res.json(post);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+module.exports.getPostsBySearch = async (req, res) => {
+  const { location, title, tags } = req.query;
+
+  try {
+    const location1 = new RegExp(location, "i");
+    const title1 = new RegExp(title, "i");
+    const posts = await Post.find({
+      $or: [
+        { location: location1 },
+        { title: title1 },
+        { tags: { $in: tags.split(",") } },
+      ],
+    }).sort({ _id: -1 });
+    res.status(200).json({ data: posts });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

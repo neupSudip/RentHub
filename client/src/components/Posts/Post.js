@@ -1,13 +1,20 @@
 import React from "react";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 import "./style.css";
 
 const Post = ({ post }) => {
-  const date = moment("2018-05-18T04:00:00.000Z").format("DD MMM, YYYY");
+  const date = moment(post.createdAt).format("DD MMM, YYYY");
+
+  const history = useNavigate();
+
+  const openPost = () => {
+    history(`/posts/${post._id}`);
+  };
 
   return (
-    <div>
+    <div onClick={openPost} className="card">
       <img className="image" src={post.image} alt={post.title} />
       <h1> {post.title}</h1>
       <h1>{post.creatorName}</h1>

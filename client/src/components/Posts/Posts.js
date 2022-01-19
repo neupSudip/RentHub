@@ -1,31 +1,51 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import Post from "./Post/Post";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import Post from "./Post";
 import { useNavigate, useLocation } from "react-router-dom";
+import { getPosts, getPostsBySearch } from "../../actions/posts";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
 const Posts = () => {
-  const allPosts = useSelector((state) => state.posts);
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
+
   const query = useQuery();
   const history = useNavigate();
+  const dispatch = useDispatch();
 
   const [location, setLocation] = useState("");
   const [title, setTitle] = useState("");
   const [tag, setTag] = useState("");
 
-  const serachQuery = query.get("searchQuery");
+  const searchQuery = query.get("searchQuery");
+
+  useEffect(() => {
+    if (window.location.pathname === "/") {
+      dispatch(getPosts());
+    }
+  }, [window.location.pathname]);
 
   const searchPosts = () => {
-    console.log(location, title, tag);
+    if (location.trim() || title.trim() || tag) {
+      dispatch(getPostsBySearch({ location, title, tag }));
+      history(
+        `/posts/search?location=${location || "none"}&title=${
+          title || "none"
+        }&tags=${tag || "none"}`
+      );
+    } else {
+      history("/");
+    }
   };
 
-  const posts = allPosts.filter(
-    (post) =>
-      post.creatorId !== user?._id && post.creatorType !== user?.userType
+  const { posts } = useSelector((state) => state.posts);
+
+  console.log(posts);
+
+  const post = posts?.filter(
+    (p) => p.creatorId !== user?._id && p.creatorType !== user?.userType
   );
   return (
     <div>
@@ -63,11 +83,11 @@ const Posts = () => {
         </div>
       )}
 
-      <div>
+      <div className="cards">
         {!user ? (
           <h1>Please Login to see Features</h1>
         ) : (
-          posts.map((post) => <Post key={post._id} post={post} />)
+          post?.map((post) => <Post key={post._id} post={post} />)
         )}
       </div>
     </div>
