@@ -13,3 +13,14 @@
 .card {
   box-shadow: 1px 1px 1rem 1px rgb(149, 147, 147);
 }
+
+.comment-area {
+  height: 4rem;
+  width: 100%;
+  resize: none;
+}
+
+.view-comments {
+  height: 20rem;
+  overflow: auto;
+}

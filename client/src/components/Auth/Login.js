@@ -15,6 +15,8 @@ const initialState = {
 
 function Login() {
   const [formDate, setFormData] = useState(initialState);
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
   const dispatch = useDispatch();
   const history = useNavigate();
@@ -22,8 +24,6 @@ function Login() {
   const handleChange = (e) => {
     setFormData({ ...formDate, [e.target.name]: e.target.value });
   };
-
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleShowPassword = () => {
     setShowPassword((prevState) => !prevState);
@@ -42,10 +42,11 @@ function Login() {
     console.log("google sign in fail");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      dispatch(signin(formDate, history));
+      const newError = await dispatch(signin(formDate, history));
+      setError(newError);
     } catch (error) {
       console.log(error);
     }
@@ -53,6 +54,8 @@ function Login() {
 
   return (
     <div className="form-container">
+      {error && <h1>{error}</h1>}
+
       <form onSubmit={handleSubmit}>
         <h1>Sign In</h1>
 

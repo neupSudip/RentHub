@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+var crypto = require("crypto");
 
 const User = require("../models/user");
 const Temp = require("../models/tempUser");
@@ -7,11 +8,10 @@ const sendEmail = require("../controllers/sendEmail");
 
 module.exports.signin = async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
   try {
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(404).json({ message: "User doesn't found" });
+    if (!user) return res.status(404).json({ message: "User does not exist" });
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
@@ -36,11 +36,10 @@ module.exports.signin = async (req, res) => {
 
 module.exports.signingoogle = async (req, res) => {
   const { email } = req.body;
-  console.log("email", email);
   try {
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(404).json({ message: "User doesn't found" });
+    if (!user) return res.status(404).json({ message: "User does not exist" });
 
     const token = jwt.sign(
       { email: user.email, id: user._id, userType: user.userType },
@@ -80,16 +79,16 @@ module.exports.signup = async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRES }
     );
 
-    const hash = hashedPassword;
+    var id = crypto.randomBytes(20).toString("hex");
+    var value = result._id.toString().concat(id);
+
     const temp = new Temp({
-      hash,
-      userId: result._id,
+      userId: result._id.toString(),
+      hash: value,
     });
 
     await temp.save();
-
-    //sendEmail(email, hash, result._id);
-
+    sendEmail(email, value);
     res.status(200).json({ result, token });
   } catch (error) {
     res.status(500).json({ message: "something went wrong" });
@@ -97,14 +96,13 @@ module.exports.signup = async (req, res) => {
 };
 
 module.exports.verifyuser = async (req, res) => {
-  const { id, hash } = req.params;
-  console.log(id, hash);
-
+  const { value } = req.params;
+  const id = value.slice(0, 24);
   const user = await User.findOne({ _id: id });
 
-  if (!user) return res.status(404).json({ message: "User doesn't found" });
+  if (!user) return res.status(404).json({ message: "Invalid Token" });
 
-  const tempValue = await Temp.findOne({ userId: id, hash: hash });
+  const tempValue = await Temp.findOne({ userId: id, hash: value });
 
   if (!tempValue) {
     return res
@@ -112,6 +110,8 @@ module.exports.verifyuser = async (req, res) => {
       .json({ message: "Invalid verification credentials" });
   } else {
     user.isVerified = true;
+    await tempValue.remove();
     await user.save();
+    res.status(200).json({ message: "Redirecting..." });
   }
 };

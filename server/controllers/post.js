@@ -58,7 +58,6 @@ module.exports.createPost = async (req, res) => {
   });
   try {
     await newPost.save();
-
     res.status(201).json(newPost);
   } catch (error) {
     res.status(409).json({ message: error.message });
@@ -70,7 +69,7 @@ module.exports.updatePost = async (req, res) => {
   const post = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(_id))
-    return res.satus(404).send("No Such Post Found !");
+    return res.satus(404).send("Can not found the post !");
 
   const updatedPost = await Post.findByIdAndUpdate(
     _id,
@@ -81,11 +80,22 @@ module.exports.updatePost = async (req, res) => {
   res.json(updatedPost);
 };
 
+module.exports.postComment = async (req, res) => {
+  const { id } = req.params;
+  const { comment } = req.body;
+
+  try {
+    const post = await Post.findById(id);
+    post.comments.push(comment);
+    const updatedPost = await Post.findByIdAndUpdate(id, post, { new: true });
+    res.json(updatedPost);
+  } catch (error) {}
+};
+
 module.exports.deletePost = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id))
-    return res.satus(404).send("No Such Post Found !");
-
+    return res.satus(404).send("Can not found the post !");
   await Post.findByIdAndRemove(id);
 
   res.json({ message: "Post has been deleted successfully" });

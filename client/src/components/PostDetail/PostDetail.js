@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPost, getPostsBySearch } from "../../actions/posts";
+import Comment from "./Comment";
 
 const PostDetail = () => {
   const { post, posts } = useSelector((state) => state.posts);
@@ -10,11 +11,15 @@ const PostDetail = () => {
   const history = useNavigate();
   const { id } = useParams();
 
-  console.log(post);
+  const user = JSON.parse(localStorage.getItem("profile"))?.result;
 
   useEffect(() => {
     dispatch(getPost(id));
   }, [id]);
+
+  const openPost = (id) => {
+    history(`/posts/${id}`);
+  };
 
   useEffect(() => {
     if (post) {
@@ -28,9 +33,12 @@ const PostDetail = () => {
     }
   }, [post]);
 
-  const recommend = posts?.filter(({ _id }) => _id !== post?._id);
-
-  console.log(recommend);
+  const recommend = posts?.filter(
+    (p) =>
+      p.creatorId !== user?._id &&
+      p.creatorType !== user?.userType &&
+      p._id !== post?._id
+  );
 
   return (
     <div>
@@ -47,6 +55,24 @@ const PostDetail = () => {
           <h1>{moment(post.createdAt).format("DD MMM, YYYY")}</h1>
         </div>
       )}
+
+      {post && <Comment post={post} />}
+
+      {/* Recommendation Section */}
+
+      {/* {recommend?.length && (
+        <div>
+          <h1>Recommendation</h1>
+          {(recommend.length = 4)}
+          {recommend?.map(({ _id, image, title, location }) => (
+            <div onClick={() => openPost(_id)} key={_id}>
+              <img className="image" src={image} alt={title} />
+              <h1>{title}</h1>
+              <h1>{location}</h1>
+            </div>
+          ))}
+        </div>
+      )} */}
     </div>
   );
 };

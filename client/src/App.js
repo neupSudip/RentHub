@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { getPosts } from "./actions/posts";
 
 import NavBar from "./components/NavBar/NavBar";
 import Form from "./components/Form/Form";
@@ -11,6 +9,7 @@ import Login from "./components/Auth/Login";
 import SignUp from "./components/Auth/SignUp";
 import PostDetail from "./components/PostDetail/PostDetail";
 import Welcome from "./components/Landing/Welcome";
+import Verify from "./components/Auth/Verify";
 
 const App = () => {
   const [currentId, setCurrentId] = useState(null);
@@ -78,6 +77,8 @@ const App = () => {
             )
           }
         />
+
+        <Route path="/verify/:id" element={<Verify />} />
       </Routes>
     </BrowserRouter>
   );

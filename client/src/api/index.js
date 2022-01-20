@@ -30,11 +30,16 @@ export const createPost = (newPost) => API.post("/posts", newPost);
 export const updatePost = (id, updatedPost) =>
   API.patch(`/posts/${id}`, updatedPost);
 
+export const postComment = (id, comment) =>
+  API.post(`/posts/${id}/comment`, { comment });
+
 export const deletePost = (id) => API.delete(`/posts/${id}`);
 
 export const signIn = (formData) => API.post("/user/signin", formData);
 
 export const signUp = (formData) => API.post("/user/signup", formData);
+
+export const verifyUser = (id) => API.get(`/user/verify/${id}`);
 
 export const signInGoogle = (formData) =>
   API.post("/user/signingoogle", formData);

@@ -10,6 +10,15 @@ export default (state = [], action) => {
       return { ...state, posts: action.payload };
     case "CREATE":
       return [...state, action.payload];
+    case "COMMENT":
+      return {
+        ...state,
+        posts: state.posts.map((post) => {
+          if (post._id === action.payload._id) return action.payload;
+
+          return post;
+        }),
+      };
     case "UPDATE":
       return state.map((post) =>
         post._id === action.payload._id ? action.payload : post

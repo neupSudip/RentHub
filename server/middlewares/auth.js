@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 module.exports.auth = (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
-    console.log(token);
 
     if (token) {
       const isCustomAuth = token.length < 500;

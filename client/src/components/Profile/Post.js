@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./style.css";
 import { useDispatch } from "react-redux";
 
@@ -8,14 +8,20 @@ import { deletePost } from "../../actions/posts";
 
 const Post = ({ post, setCurrentId }) => {
   const dispatch = useDispatch();
+  const history = useNavigate();
+
   const date = moment("2018-05-18T04:00:00.000Z").format("DD MMM, YYYY");
 
   const updatePost = () => {
     setCurrentId(post._id);
   };
 
+  const openPost = () => {
+    history(`/posts/${post._id}`);
+  };
+
   return (
-    <div className="grid-item">
+    <div className="grid-item" onClick={openPost}>
       <img className="profile-post-img" src={post.image} alt={post.title} />
       <h1> {post.title}</h1>
       <h1> {`NRP ${post.amount}`}</h1>

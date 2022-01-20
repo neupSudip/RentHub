@@ -4,14 +4,14 @@ import Post from "./Post";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getPosts, getPostsBySearch } from "../../actions/posts";
 
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+// function useQuery() {
+//   return new URLSearchParams(useLocation().search);
+// }
 
 const Posts = () => {
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
 
-  const query = useQuery();
+  // const query = useQuery();
   const history = useNavigate();
   const dispatch = useDispatch();
 
@@ -19,7 +19,7 @@ const Posts = () => {
   const [title, setTitle] = useState("");
   const [tag, setTag] = useState("");
 
-  const searchQuery = query.get("searchQuery");
+  // const searchQuery = query.get("searchQuery");
 
   useEffect(() => {
     if (window.location.pathname === "/") {
@@ -41,8 +41,6 @@ const Posts = () => {
   };
 
   const { posts } = useSelector((state) => state.posts);
-
-  console.log(posts);
 
   const post = posts?.filter(
     (p) => p.creatorId !== user?._id && p.creatorType !== user?.userType

@@ -17,7 +17,6 @@ function Profile({ setCurrentId, setCurrentUser }) {
   }, [window.location.pathname]);
 
   const { userPosts } = useSelector((state) => state.posts);
-  console.log(userPosts);
 
   const logout = () => {
     dispatch({ type: "LOGOUT" });

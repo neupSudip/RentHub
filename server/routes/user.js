@@ -11,6 +11,6 @@ const router = express.Router();
 router.post("/signin", signin);
 router.post("/signup", signup);
 router.post("/signingoogle", signingoogle);
-router.get("/verify/:id/:hash", verifyuser);
+router.get("/verify/:value", verifyuser);
 
 module.exports = router;
