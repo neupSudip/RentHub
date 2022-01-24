@@ -36,7 +36,7 @@ const NavBar = () => {
                     src={user.result.imageUrl || user.result.image}
                   />
                 ) : (
-                  <p> {user.result.name.charAt(0)}</p>
+                  <p className="profile-image"> {user.result.name.charAt(0)}</p>
                 )}
               </Link>
             </li>

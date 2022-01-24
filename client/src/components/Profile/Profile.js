@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getUserPosts } from "../../actions/posts";
-import "./style.css";
+import "./profile.css";
 
 import Post from "./Post";
 
@@ -26,8 +26,20 @@ function Profile({ setCurrentId, setCurrentUser }) {
   };
   return (
     <div>
-      <button onClick={logout}>Log Out</button>
+      <button className="logout-btn" onClick={logout}>
+        Log Out
+      </button>
+      <div className="profile">
+        <img
+          className="profile-img"
+          src={user.result.image}
+          alt={user.result.name}
+        />
 
+        <h1>{`${user.result.name} (${user.result.userType})`}</h1>
+      </div>
+
+      <h1 className="my-post">My Posts</h1>
       <div className="grid-container">
         {!userPosts?.length ? (
           <h1>There is no userPosts</h1>

@@ -6,7 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { AUTH_TOKEN } from "../../config.file";
 
 import { signin, signingoogle } from "../../actions/auth";
-import "./style.css";
+import "./auth.css";
 
 const initialState = {
   email: "",
@@ -53,10 +53,10 @@ function Login() {
   };
 
   return (
-    <div className="form-container">
-      {error && <h1>{error}</h1>}
+    <div>
+      {error && <h1 className="error-message">{error}</h1>}
 
-      <form onSubmit={handleSubmit}>
+      <form className="form-container" onSubmit={handleSubmit}>
         <h1>Sign In</h1>
 
         <p>Valid Email Address</p>
@@ -79,10 +79,10 @@ function Login() {
             required
           />
 
-          <i onClick={handleShowPassword} className="fa fa-user icon"></i>
+          <i onClick={handleShowPassword} className="fa fa-eye icon fa-2x"></i>
         </div>
 
-        <button className="btn-submit" type="submit">
+        <button className="btn-signin" type="submit">
           Sign In
         </button>
         <GoogleLogin
@@ -100,7 +100,11 @@ function Login() {
           onFailure={googleFailure}
           cookiePolicy={"single_host_origin"}
         />
-        <Link to="/signup">Does not have account Sign Up</Link>
+        <span className="switch-auth">
+          <Link to="/signup">
+            Does not have account? &nbsp;&nbsp;&nbsp;&nbsp; Sign Up
+          </Link>
+        </span>
       </form>
     </div>
   );

@@ -17,12 +17,14 @@ const postSchema = mongoose.Schema({
     type: String,
     trim: true,
   },
+  coords: String,
   negotiable: String,
   image: String,
   discription: {
     type: String,
     trim: true,
   },
+  people: Number,
   comments: { type: [String], default: [] },
   createdAt: {
     type: Date,

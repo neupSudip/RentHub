@@ -88,7 +88,7 @@ module.exports.signup = async (req, res) => {
     });
 
     await temp.save();
-    sendEmail(email, value);
+    //sendEmail(email, value);
     res.status(200).json({ result, token });
   } catch (error) {
     res.status(500).json({ message: "something went wrong" });

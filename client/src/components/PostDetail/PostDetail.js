@@ -5,6 +5,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getPost, getPostsBySearch } from "../../actions/posts";
 import Comment from "./Comment";
 
+import requiredImage from "../../images/required.jpg";
+
+import "./postdetails.css";
+
 const PostDetail = () => {
   const { post, posts } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
@@ -41,38 +45,85 @@ const PostDetail = () => {
   );
 
   return (
-    <div>
+    <div className="post-details">
       {!post ? (
         <h1>page not found</h1>
       ) : (
-        <div>
-          <img className="image" src={post.image} alt={post.title} />
+        <>
+          <h1 className="creator-name">
+            {`${post.creatorName} || ${moment(post.createdAt).format(
+              "DD MMM, YYYY"
+            )}`}{" "}
+          </h1>
+
+          <div className="detail-img">
+            {post.image ? (
+              <img src={post.image} alt={post.title} />
+            ) : (
+              <img src={requiredImage} alt={post.title} />
+            )}
+          </div>
           <h1> {post.title}</h1>
-          <h1>{post.creatorName}</h1>
-          <h1> {`NRP ${post.amount}`}</h1>
-          <h1>{post.location}</h1>
-          <h1>{post.tags.map((tag) => `#${tag} `)}</h1>
-          <h1>{moment(post.createdAt).format("DD MMM, YYYY")}</h1>
-        </div>
+
+          <h2> {`NRP ${post.amount} (${post.negotiable})`}</h2>
+          <h2>{post.location}</h2>
+          <div className="location-booking">
+            <div className="geo-location">
+              Geo location <br /> this section is not created yet
+            </div>
+            <div className="booking-section">
+              Booking Section <br /> this section is not created yet
+            </div>
+          </div>
+          <p className="discription">{post.discription}</p>
+          <h2 className="facilities">Facilities: </h2>
+          <div className="tags">
+            {post.tags.map((tag, i) => (
+              <p key={i}>{tag}</p>
+            ))}
+          </div>
+        </>
       )}
 
       {post && <Comment post={post} />}
 
       {/* Recommendation Section */}
 
-      {/* {recommend?.length && (
-        <div>
+      {recommend?.length ? (
+        <>
           <h1>Recommendation</h1>
-          {(recommend.length = 4)}
-          {recommend?.map(({ _id, image, title, location }) => (
-            <div onClick={() => openPost(_id)} key={_id}>
-              <img className="image" src={image} alt={title} />
-              <h1>{title}</h1>
-              <h1>{location}</h1>
-            </div>
-          ))}
-        </div>
-      )} */}
+          <div className="recommended-posts">
+            {/* {(recommend.length = 4)} */}
+            {recommend?.map((post) => (
+              <div
+                className="recommended-post"
+                key={post._id}
+                onClick={() => openPost(post._id)}
+              >
+                {post.image ? (
+                  <img
+                    className="recommend-img"
+                    src={post.image}
+                    alt={post.title}
+                  />
+                ) : (
+                  <img
+                    className="recommend-img"
+                    onClick={openPost}
+                    src={requiredImage}
+                    alt={post.title}
+                  />
+                )}
+
+                <h3>{post.title}</h3>
+                <h3>{post.location}</h3>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <h1>Sorry !! No related posts found....</h1>
+      )}
     </div>
   );
 };

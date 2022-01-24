@@ -1,17 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import FileBase from "react-file-base64";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
 import { useNavigate } from "react-router-dom";
 
+import "./form.css";
+
 const Form = ({ currentId, setCurrentId }) => {
+  const autoFocus = useCallback((el) => (el ? el.focus() : null), []);
+
   const user = JSON.parse(localStorage.getItem("profile"));
+  const [error, setError] = useState("");
 
   const [postData, setPostDate] = useState({
     creatorId: "",
     creatorType: "",
     title: "",
     location: "",
+    coords: "",
+    people: "",
     amount: "",
     tags: "",
     discription: "",
@@ -30,28 +37,47 @@ const Form = ({ currentId, setCurrentId }) => {
     if (post) setPostDate(post);
   }, [post]);
 
+  navigator.geolocation.getCurrentPosition(function (position) {
+    setPostDate({
+      ...postData,
+      coords: `${position.coords.latitude},${position.coords.longitude}`,
+    });
+  });
+
+  const handleLocation = (e) => {
+    e.preventDefault();
+    setPostDate({
+      ...postData,
+      coords: "hello",
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (currentId) {
-      dispatch(
-        updatePost(currentId, {
-          ...postData,
-          creatorName: user?.result?.name,
-          creatorType: user?.result?.userType,
-        })
-      );
+    if (!postData.image && user.result.userType === "owner") {
+      setError("Image is required");
     } else {
-      dispatch(
-        createPost({
-          ...postData,
-          creatorName: user?.result?.name,
-          creatorType: user?.result?.userType,
-        })
-      );
+      if (currentId) {
+        dispatch(
+          updatePost(currentId, {
+            ...postData,
+            creatorName: user?.result?.name,
+            creatorType: user?.result?.userType,
+          })
+        );
+      } else {
+        dispatch(
+          createPost({
+            ...postData,
+            creatorName: user?.result?.name,
+            creatorType: user?.result?.userType,
+          })
+        );
+      }
+      reset();
+      history("/");
     }
-    reset();
-    history("/");
   };
 
   const reset = () => {
@@ -61,6 +87,8 @@ const Form = ({ currentId, setCurrentId }) => {
       creatorType: "",
       title: "",
       location: "",
+      coords: "",
+      people: "",
       amount: "",
       tags: "",
       discription: "",
@@ -71,17 +99,22 @@ const Form = ({ currentId, setCurrentId }) => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="post-form">
+        {error && <h1 className="error-message">{error}</h1>}
+
         <h1>{currentId ? "Update" : "Create"} Post</h1>
+        <p>Insert Title: 2 Rooms with flat</p>
         <input
           type="text"
           name="title"
           label="title"
-          placeholder="title"
+          placeholder="Insert Title"
           value={postData.title}
           onChange={(e) => setPostDate({ ...postData, title: e.target.value })}
+          ref={autoFocus}
           required
         />
+        <p>Amount in Rupees</p>
         <input
           type="number"
           name="amount"
@@ -91,6 +124,7 @@ const Form = ({ currentId, setCurrentId }) => {
           onChange={(e) => setPostDate({ ...postData, amount: e.target.value })}
           required
         />
+        <p>Location: Naxal, Kathmandu)</p>
         <input
           type="text"
           name="location"
@@ -102,6 +136,8 @@ const Form = ({ currentId, setCurrentId }) => {
           }
           required
         />
+
+        <p>Tags/Facilities: water24hours,parking,internet</p>
         <input
           type="text"
           name="tags"
@@ -116,7 +152,8 @@ const Form = ({ currentId, setCurrentId }) => {
           }
           required
         />
-        <input
+        <p>Add a description to Post</p>
+        <textarea
           type="text"
           name="discription"
           label="discription"
@@ -127,6 +164,7 @@ const Form = ({ currentId, setCurrentId }) => {
           }
           required
         />
+
         <select
           onChange={(e) =>
             setPostDate({ ...postData, negotiable: e.target.value })
@@ -137,13 +175,44 @@ const Form = ({ currentId, setCurrentId }) => {
           <option value="non-negotiable">non-negotiable</option>
         </select>
 
-        <FileBase
-          type="file"
-          multiple={false}
-          onDone={({ base64 }) => setPostDate({ ...postData, image: base64 })}
-        />
-        <button onClick={reset}>Reset</button>
-        <button type="submit">Submit </button>
+        {user?.result.userType === "owner" ? (
+          <>
+            <p>Geo Location</p>
+            <button onClick={handleLocation}>
+              Current location: {postData.coords}
+            </button>
+            <p>Add images of Rooms</p>
+            <FileBase
+              type="file"
+              multiple={false}
+              onDone={({ base64 }) =>
+                setPostDate({ ...postData, image: base64 })
+              }
+            />
+          </>
+        ) : (
+          <>
+            <p>Number of people</p>
+            <input
+              type="number"
+              name="people"
+              label="people"
+              placeholder="people"
+              value={postData.people}
+              onChange={(e) =>
+                setPostDate({ ...postData, people: e.target.value })
+              }
+              required
+            />
+          </>
+        )}
+
+        <button className="btn-reset" onClick={reset}>
+          Reset
+        </button>
+        <button className="btn-submit" type="submit">
+          Submit{" "}
+        </button>
       </form>
     </div>
   );

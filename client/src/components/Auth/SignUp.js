@@ -3,9 +3,10 @@ import { GoogleLogin } from "react-google-login";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import FileBase from "react-file-base64";
+import PasswordChecklist from "react-password-checklist";
 
 import { signup } from "../../actions/auth";
-import "./style.css";
+import "./auth.css";
 import { AUTH_TOKEN } from "../../config.file";
 
 const initialState = {
@@ -59,18 +60,28 @@ function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const newError = await dispatch(signup(formDate, history));
-      setError(newError);
-    } catch (error) {
-      console.log(error);
+
+    const rx = new RegExp("(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$");
+
+    const ok = rx.test(formDate.password);
+
+    if (ok && formDate.image) {
+      try {
+        const newError = await dispatch(signup(formDate, history));
+        setError(newError);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    if (!formDate.image) {
+      setError("Image is Required");
     }
   };
 
   return (
-    <div className="form-container">
-      {error && <h1>{error}</h1>}
-      <form onSubmit={handleSubmit}>
+    <div>
+      {error && <h1 className="error-message">{error}</h1>}
+      <form className="form-container" onSubmit={handleSubmit}>
         {isVerify ? (
           <>
             <p>Create Password</p>
@@ -84,7 +95,21 @@ function SignUp() {
                 required
               />
 
-              <i onClick={handleShowPassword} className="fa fa-user icon"></i>
+              <i
+                onClick={handleShowPassword}
+                className="fa fa-eye icon fa-2x"
+              ></i>
+              <PasswordChecklist
+                rules={["minLength", "number", "capital", "lowercase"]}
+                minLength={8}
+                value={formDate.password}
+                messages={{
+                  minLength: "Minimum password length 8",
+                  number: "Must have a number",
+                  capital: "Must have a capital letter",
+                  lowercase: "Must have a lowercase letter",
+                }}
+              />
             </div>
             <select
               onChange={(e) =>
@@ -95,7 +120,7 @@ function SignUp() {
               <option value="renter">Renter</option>
             </select>
 
-            <button className="btn-submit" type="submit">
+            <button className="btn-signup" type="submit">
               Sign Up
             </button>
           </>
@@ -120,6 +145,16 @@ function SignUp() {
               onChange={handleChange}
               required
             />
+
+            <select
+              onChange={(e) =>
+                setFormData({ ...formDate, userType: e.target.value })
+              }
+            >
+              <option value="owner">Owner</option>
+              <option value="renter">Renter</option>
+            </select>
+
             <p>Valid Email Address</p>
             <input
               type="email"
@@ -140,27 +175,35 @@ function SignUp() {
                 required
               />
 
-              <i onClick={handleShowPassword} className="fa fa-user icon"></i>
+              <i
+                onClick={handleShowPassword}
+                className="fa fa-eye icon fa-2x"
+              ></i>
+
+              <PasswordChecklist
+                rules={["minLength", "number", "capital", "lowercase"]}
+                minLength={8}
+                value={formDate.password}
+                messages={{
+                  minLength: "Minimum Password length 8",
+                  number: "Must have a number",
+                  capital: "Must have a capital letter",
+                  lowercase: "Must have a lowercase letter",
+                }}
+              />
             </div>
 
-            <select
-              onChange={(e) =>
-                setFormData({ ...formDate, userType: e.target.value })
-              }
-            >
-              <option value="owner">Owner</option>
-              <option value="renter">Renter</option>
-            </select>
+            <div className="signup-image">
+              <FileBase
+                type="file"
+                multiple={false}
+                onDone={({ base64 }) =>
+                  setFormData({ ...formDate, image: base64 })
+                }
+              />
+            </div>
 
-            <FileBase
-              type="file"
-              multiple={false}
-              onDone={({ base64 }) =>
-                setFormData({ ...formDate, image: base64 })
-              }
-            />
-
-            <button className="btn-submit" type="submit">
+            <button className="btn-signup" type="submit">
               Sign Up
             </button>
             <GoogleLogin
@@ -178,7 +221,11 @@ function SignUp() {
               onFailure={googleFailure}
               cookiePolicy={"single_host_origin"}
             />
-            <Link to="/login">Already have account Sign in</Link>
+            <span className="switch-auth">
+              <Link to="/login">
+                Already have account? &nbsp;&nbsp;&nbsp;&nbsp;Sign in
+              </Link>
+            </span>
           </>
         )}
       </form>

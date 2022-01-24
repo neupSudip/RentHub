@@ -44,6 +44,17 @@ const App = () => {
           element={!user ? <Navigate to="/welcome" /> : <PostDetail />}
         />
         <Route
+          path="/updatepost"
+          exact
+          element={
+            !user ? (
+              <Navigate to="/welcome" />
+            ) : (
+              <Form currentId={currentId} setCurrentId={setCurrentId} />
+            )
+          }
+        />
+        <Route
           path="/createpost"
           exact
           element={

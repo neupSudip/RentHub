@@ -1,0 +1,117 @@
+.comment-section {
+  max-width: 800px;
+  margin: 2rem auto;
+  display: flex;
+}
+
+.comment-section > * {
+  flex: 1;
+}
+
+button {
+  border-style: none;
+  border-radius: 4px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  transition: box-shadow 0.5s ease-in-out, color 0.5s ease-in-out,
+    background-color 0.5s ease-in-out;
+  background-color: rgb(189, 188, 188);
+  color: rgb(255, 255, 255);
+  height: 3rem;
+  padding: 0 2rem;
+}
+
+.reviews {
+  margin: 1rem auto;
+  border-bottom: 2px solid black;
+}
+.view-comments p {
+  margin-bottom: 1rem;
+}
+
+.view-comments span {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.post-details {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0.5rem;
+}
+.creator-name {
+  margin-bottom: 1rem;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+}
+
+.detail-img {
+  width: 100%;
+  text-align: center;
+}
+
+.detail-img img {
+  max-width: 600px;
+  width: 100%;
+  height: 35vh;
+  margin-bottom: 2rem;
+}
+
+.location-booking {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+  gap: 3rem;
+  margin: 1.5rem 0px;
+}
+
+.geo-location,
+.booking-section {
+  height: 10rem;
+  background-color: rgb(231, 229, 226);
+  box-shadow: 2px 2px 2px rgb(221, 217, 217);
+  text-align: center;
+  font-size: large;
+}
+
+.discription {
+  max-width: 800px;
+  font-size: 1.4rem;
+  text-align: justify;
+}
+
+.facilities {
+  margin: 1rem 0px;
+}
+
+.tags {
+  width: 50%;
+  display: flex;
+}
+
+.tags p {
+  background-color: rgb(143, 181, 182);
+  margin: 2px;
+  padding: 0.7rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 1rem;
+}
+
+.recommended-posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0px;
+}
+
+.recommended-post {
+  box-shadow: 2px 2px 2px rgb(221, 217, 217);
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+  text-align: center;
+}
+
+.recommend-img {
+  width: 100%;
+  height: 15vh;
+}

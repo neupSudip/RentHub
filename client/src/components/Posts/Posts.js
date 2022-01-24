@@ -47,43 +47,41 @@ const Posts = () => {
   );
   return (
     <div>
-      {user && (
-        <div className="search-bar">
-          <div className="search-fields">
-            <input
-              type="text"
-              name="location"
-              placeholder="Location"
-              label="Location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
-            <input
-              type="text"
-              name="title"
-              placeholder="Rooms/Titles"
-              label="Rooms"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <input
-              type="text"
-              name="tags"
-              placeholder="Tags"
-              label="Tags"
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
-            />
-            <button onClick={searchPosts} className="search-button">
-              Search
-            </button>
-          </div>
+      <div className="search-bar">
+        <div className="search-fields">
+          <input
+            type="text"
+            name="location"
+            placeholder="Location"
+            label="Location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
+          <input
+            type="text"
+            name="title"
+            placeholder="Rooms/Titles"
+            label="Rooms"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <input
+            type="text"
+            name="tags"
+            placeholder="Tags"
+            label="Tags"
+            value={tag}
+            onChange={(e) => setTag(e.target.value)}
+          />
+          <button onClick={searchPosts} className="search-button">
+            Search
+          </button>
         </div>
-      )}
+      </div>
 
       <div className="cards">
-        {!user ? (
-          <h1>Please Login to see Features</h1>
+        {!posts ? (
+          <h1>Sorry !! No Posts Found </h1>
         ) : (
           post?.map((post) => <Post key={post._id} post={post} />)
         )}
