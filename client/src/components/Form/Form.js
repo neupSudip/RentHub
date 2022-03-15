@@ -100,7 +100,7 @@ const Form = ({ currentId, setCurrentId }) => {
   return (
     <div>
       <form onSubmit={handleSubmit} className="post-form">
-        {error && <h1 className="error-message">{error}</h1>}
+        {error && <h3 className="error-message">{error}</h3>}
 
         <h1>{currentId ? "Update" : "Create"} Post</h1>
         <p>Insert Title: 2 Rooms with flat</p>

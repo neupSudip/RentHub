@@ -11,12 +11,13 @@ module.exports.signin = async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(404).json({ message: "User does not exist" });
+    if (!user)
+      return res.status(404).json({ message: "Invalid email/password" });
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect)
-      return res.status(400).json({ message: "Password doesn't match" });
+      return res.status(400).json({ message: "Invalid email/password" });
 
     if (!user.isVerified) {
       return res.status(400).json({ message: "User is not verified" });
@@ -88,7 +89,7 @@ module.exports.signup = async (req, res) => {
     });
 
     await temp.save();
-    //sendEmail(email, value);
+    sendEmail(email, value);
     res.status(200).json({ result, token });
   } catch (error) {
     res.status(500).json({ message: "something went wrong" });

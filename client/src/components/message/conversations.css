@@ -1,0 +1,31 @@
+.conversation {
+  margin: 6px 0px;
+  float: left;
+  font-size: 1.2rem;
+}
+
+.text {
+  padding: 10px;
+  border-radius: 20px;
+  background-color: #596c8a;
+  color: white;
+  max-width: 300px;
+}
+
+.conversation.own {
+  float: right;
+}
+
+.time {
+  margin-top: 5px;
+}
+
+.conversation.own .text {
+  background-color: rgb(236, 228, 228);
+  color: rgb(20, 14, 14);
+}
+
+.conversation.own .time {
+  float: right;
+  margin-right: 10px;
+}

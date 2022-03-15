@@ -80,8 +80,8 @@ function SignUp() {
 
   return (
     <div>
-      {error && <h1 className="error-message">{error}</h1>}
       <form className="form-container" onSubmit={handleSubmit}>
+        {error && <h3 className="error-message">{error}</h3>}
         {isVerify ? (
           <>
             <p>Create Password</p>

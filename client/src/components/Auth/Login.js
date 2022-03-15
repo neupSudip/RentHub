@@ -54,10 +54,9 @@ function Login() {
 
   return (
     <div>
-      {error && <h1 className="error-message">{error}</h1>}
-
       <form className="form-container" onSubmit={handleSubmit}>
         <h1>Sign In</h1>
+        {error && <h3 className="error-message">{error}</h3>}
 
         <p>Valid Email Address</p>
         <input

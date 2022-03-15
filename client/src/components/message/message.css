@@ -1,0 +1,17 @@
+.message {
+  height: 70vh;
+  max-width: 700px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.connections {
+  flex: 1;
+  background-color: rgb(223, 236, 236);
+}
+
+.conversations {
+  flex: 2;
+  background-color: rgb(221, 214, 228);
+}

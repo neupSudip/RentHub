@@ -6,6 +6,8 @@ const dotenv = require("dotenv");
 
 const postRoutes = require("./routes/post");
 const userRoutes = require("./routes/user");
+const messageRoutes = require("./routes/message");
+const conversationRoutes = require("./routes/conversation");
 
 const app = express();
 dotenv.config();
@@ -16,6 +18,8 @@ app.use(cors());
 
 app.use("/posts", postRoutes);
 app.use("/user", userRoutes);
+app.use("/message", messageRoutes);
+app.use("/conversation", conversationRoutes);
 
 const PORT = process.env.PORT || 5000;
 

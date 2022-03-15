@@ -10,6 +10,7 @@ import SignUp from "./components/Auth/SignUp";
 import PostDetail from "./components/PostDetail/PostDetail";
 import Welcome from "./components/Landing/Welcome";
 import Verify from "./components/Auth/Verify";
+import Message from "./components/message/Message";
 
 const App = () => {
   const [currentId, setCurrentId] = useState(null);
@@ -42,6 +43,11 @@ const App = () => {
           path="/posts/:id"
           exact
           element={!user ? <Navigate to="/welcome" /> : <PostDetail />}
+        />
+        <Route
+          path="/message"
+          exact
+          element={!user ? <Navigate to="/welcome" /> : <Message />}
         />
         <Route
           path="/updatepost"

@@ -12,7 +12,7 @@
 .form-container h1 {
   font-size: 3rem;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .form-container input,
@@ -65,4 +65,10 @@
   margin-top: 2rem;
   font-size: 1.5rem;
   color: rgb(35, 35, 147);
+}
+
+.error-message {
+  font-size: 1.2rem;
+  color: rgb(203, 20, 20);
+  text-align: center;
 }

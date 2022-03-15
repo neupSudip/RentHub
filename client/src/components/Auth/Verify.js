@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { userVerify } from "../../actions/auth";
 import { useNavigate } from "react-router-dom";
 
-//http://localhost:3000/verify/61e92c4ebcd7e55e8d2497fb95ae732bcc0e9e86ad5bfc06cd13fec44434e465
 const Verify = () => {
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
@@ -29,8 +28,9 @@ const Verify = () => {
     <div>
       <button onClick={handleClick}>Verify</button>
       <br />
-      Please click verify button to verify
-      {message && <h1>{message}</h1>}
+      <br />
+      <h1>Please click verify button to verify</h1>
+      {message && <h1 style={{ color: "red" }}>{message}</h1>}
     </div>
   );
 };

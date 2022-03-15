@@ -7,7 +7,7 @@ export const signin = (formData, history) => async (dispatch) => {
     history("/");
     window.location.reload();
   } catch (error) {
-    return error.response.data.message;
+    return error.response?.data.message;
   }
 };
 
@@ -18,7 +18,8 @@ export const signingoogle = (formData, history) => async (dispatch) => {
     history("/");
     window.location.reload();
   } catch (error) {
-    return error.response.data.message;
+    console.log(error);
+    return error.response?.data.message;
   }
 };
 
@@ -28,7 +29,7 @@ export const signup = (formData, history) => async (dispatch) => {
     dispatch({ type: "SIGNUP", data });
     history("/login");
   } catch (error) {
-    return error.response.data.message;
+    return error.response?.data.message;
   }
 };
 
@@ -37,6 +38,6 @@ export const userVerify = (id) => async (dispatch) => {
     const response = await api.verifyUser(id);
     return response.data.message;
   } catch (error) {
-    return error.response.data.message;
+    return error.response?.data.message;
   }
 };

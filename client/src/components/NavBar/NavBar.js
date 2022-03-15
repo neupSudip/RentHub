@@ -28,6 +28,9 @@ const NavBar = () => {
               <Link to="/createpost">Create</Link>
             </li>
             <li>
+              <Link to="/message">Message</Link>
+            </li>
+            <li>
               <Link to="/profile">
                 {user.result.imageUrl || user.result.image ? (
                   <img
