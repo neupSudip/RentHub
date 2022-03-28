@@ -14,6 +14,7 @@ export const signin = (formData, history) => async (dispatch) => {
 export const signingoogle = (formData, history) => async (dispatch) => {
   try {
     const { data } = await api.signInGoogle(formData);
+    console.log(data);
     dispatch({ type: "AUTH", data });
     history("/");
     window.location.reload();
@@ -37,6 +38,15 @@ export const userVerify = (id) => async (dispatch) => {
   try {
     const response = await api.verifyUser(id);
     return response.data.message;
+  } catch (error) {
+    return error.response?.data.message;
+  }
+};
+
+export const getUserDetails = (id) => async (dispatch) => {
+  try {
+    const { data } = await api.getUserDetails(id);
+    return data;
   } catch (error) {
     return error.response?.data.message;
   }

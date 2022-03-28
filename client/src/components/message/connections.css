@@ -1,4 +1,22 @@
 .connection {
   display: flex;
+  align-items: center;
   margin: 5px;
+  border-bottom: 2px solid rgb(202, 198, 198);
+  padding: 1rem 0px;
+  border-radius: 1px;
+}
+
+.connection:hover {
+  background-color: rgb(187, 187, 224);
+  cursor: pointer;
+}
+
+.connection img {
+  width: 5rem;
+  border-radius: 100%;
+}
+
+.connection h2 {
+  margin-left: 5px;
 }

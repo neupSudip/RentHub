@@ -44,6 +44,13 @@ const App = () => {
           exact
           element={!user ? <Navigate to="/welcome" /> : <PostDetail />}
         />
+
+        <Route
+          path="/message/:conversationId"
+          exact
+          element={!user ? <Navigate to="/welcome" /> : <Message />}
+        />
+
         <Route
           path="/message"
           exact

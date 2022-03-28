@@ -43,3 +43,17 @@ export const verifyUser = (id) => API.get(`/user/verify/${id}`);
 
 export const signInGoogle = (formData) =>
   API.post("/user/signingoogle", formData);
+
+export const fetchConversation = (userId) => API.get(`/conversation/${userId}`);
+
+export const createConversation = (members) =>
+  API.post("/conversation", members);
+
+export const fetchMessage = (conversationId) =>
+  API.get(`/message/${conversationId}`);
+
+export const createMessage = (newMessage) => {
+  API.post("/message", newMessage);
+};
+
+export const getUserDetails = (id) => API.get(`/user/userdetails/${id}`);

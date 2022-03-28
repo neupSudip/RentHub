@@ -4,4 +4,6 @@ import posts from "./posts";
 
 import authReducer from "./auth";
 
-export default combineReducers({ posts, authReducer });
+import messages from "./message";
+
+export default combineReducers({ posts, authReducer, messages });

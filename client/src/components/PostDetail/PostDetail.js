@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPost, getPostsBySearch } from "../../actions/posts";
+import { createConversation } from "../../actions/message";
 import Comment from "./Comment";
 
 import requiredImage from "../../images/required.jpg";
@@ -23,6 +24,12 @@ const PostDetail = () => {
 
   const openPost = (id) => {
     history(`/posts/${id}`);
+  };
+
+  const members = [user?._id, post?.creatorId];
+
+  const createConversations = () => {
+    dispatch(createConversation(members));
   };
 
   useEffect(() => {
@@ -55,6 +62,10 @@ const PostDetail = () => {
               "DD MMM, YYYY"
             )}`}{" "}
           </h1>
+
+          {post.creatorId !== user._id && (
+            <h2 onClick={() => createConversations()}>message</h2>
+          )}
 
           <div className="detail-img">
             {post.image ? (

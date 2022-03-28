@@ -1,7 +1,9 @@
-.conversation {
+.chats {
   margin: 6px 0px;
-  float: left;
   font-size: 1.2rem;
+  padding: 0px 2px;
+  display: flex;
+  flex-direction: column;
 }
 
 .text {
@@ -9,23 +11,44 @@
   border-radius: 20px;
   background-color: #596c8a;
   color: white;
-  max-width: 300px;
-}
-
-.conversation.own {
-  float: right;
+  max-width: 250px;
 }
 
 .time {
+  margin-right: 10px;
+}
+
+.own .text {
+  background-color: rgb(236, 228, 228);
+  color: rgb(20, 14, 14);
   margin-top: 5px;
 }
 
-.conversation.own .text {
-  background-color: rgb(236, 228, 228);
-  color: rgb(20, 14, 14);
+.friend {
+  float: left;
 }
 
-.conversation.own .time {
+.own {
   float: right;
-  margin-right: 10px;
+}
+
+.message-input {
+  position: sticky;
+  width: 100%;
+  bottom: 0;
+}
+
+.message-input input {
+  width: 80%;
+  height: 4rem;
+  border-radius: 5px;
+  border-style: none;
+}
+
+.message-input button {
+  width: 20%;
+  height: 4rem;
+  font-size: 2rem;
+  color: rgb(255, 255, 255);
+  background-color: rgb(101, 138, 172);
 }

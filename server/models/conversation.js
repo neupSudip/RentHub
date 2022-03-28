@@ -5,6 +5,10 @@ const conversationSchema = mongoose.Schema({
     type: Array,
     require: true,
   },
+  modifiedAt: {
+    type: Date,
+    default: new Date(),
+  },
 });
 
 const Conversation = mongoose.model("Conversation", conversationSchema);
