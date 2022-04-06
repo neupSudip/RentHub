@@ -29,10 +29,7 @@ const Connections = ({ conversation, setCurrentChat, userId }) => {
 
   return (
     <div className="connection" onClick={handleClick}>
-      <img
-        src="https://media.istockphoto.com/photos/tiger-picture-id1324300536"
-        alt="image"
-      />
+      <img src={userDetails[0]?.image} alt={userDetails[0]?.name.charAt(0)} />
 
       <h2>{userDetails[0]?.name}</h2>
     </div>

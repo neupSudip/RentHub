@@ -25,19 +25,19 @@ io.on("connection", (socket) => {
 
   //take userId and socketId from user
   socket.on("addUser", (userId) => {
-    console.log(userId, socket.id);
+    console.log("line 28. user Id and socket id: ", userId, socket.id);
     addUser(userId, socket.id);
-    console.log(users);
+    console.log("line 30.", users);
 
     io.emit("getUsers", users);
   });
 
   //send and get message
   socket.on("sendMessage", ({ senderId, receiverId, text }) => {
-    console.log(users);
+    console.log("line 37. ", users);
+    console.log("line 38.", senderId, receiverId, text);
     const user = getUser(receiverId);
-    console.log(user);
-    console.log(senderId, receiverId, text);
+    console.log("line 40", user);
     io.to(user.socketId).emit("getMessage", {
       senderId,
       text,

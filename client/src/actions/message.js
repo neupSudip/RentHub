@@ -13,7 +13,7 @@ export const createMessage = (newMessage) => async (dispatch) => {
   try {
     const { data } = await api.createMessage(newMessage);
     console.log(data);
-    // dispatch({ type: "CREATE_MESSAGE", payload: data });
+    dispatch({ type: "CREATE_MESSAGE", payload: data });
   } catch (error) {
     console.log(error);
   }

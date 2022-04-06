@@ -7,44 +7,53 @@ import { createMessage, getMessage } from "../../actions/message";
 import { io } from "socket.io-client";
 
 const Conversations = ({ senderId, currentChat }) => {
+  const { messages } = useSelector((state) => state.messages);
+
   const [message, setMessage] = useState("");
-  const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [arrivalMessage, setArrivalMessage] = useState({
+    senderId: "",
+    text: "",
+    time: "",
+  });
 
   const { conversationId } = useParams();
 
   const dispatch = useDispatch();
   const socket = useRef();
+  const ref = useRef();
 
-  const { messages } = useSelector((state) => state.messages);
+  const [conversations, setConversations] = useState("");
+
+  useEffect(() => {
+    setConversations(messages);
+  }, [messages]);
 
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
     socket.current.on("getMessage", (data) => {
+      console.log(data);
       setArrivalMessage({
-        sender: data.senderId,
+        senderId: data.senderId,
         text: data.text,
-        createdAt: Date.now(),
+        time: Date.now(),
       });
     });
   }, []);
 
   useEffect(() => {
     arrivalMessage &&
-      currentChat?.members.includes(arrivalMessage.sender) &&
-      setMessage((prev) => [...prev, arrivalMessage]);
+      currentChat?.members.includes(arrivalMessage.senderId) &&
+      setConversations((prev) => [...prev, arrivalMessage]);
+    // ref.current.scrollIntoView({ block: "end", inline: "nearest" });
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
     socket.current.emit("addUser", senderId);
-    socket.current.on("getUsers", (users) => {
-      // setOnlineUsers(
-      //   user.followings.filter((f) => users.some((u) => u.userId === f))
-      // );
-    });
   }, [senderId]);
 
   useEffect(() => {
     dispatch(getMessage(conversationId));
+    // ref.current.scrollIntoView({ block: "end", inline: "nearest" });
   }, [conversationId]);
 
   const handleSubmit = async (e) => {
@@ -61,27 +70,23 @@ const Conversations = ({ senderId, currentChat }) => {
     });
 
     const newMessage = {
-      conversationId: conversationId,
-      senderId: senderId,
+      conversationId,
+      senderId,
       text: message,
+      time: Date.now(),
     };
 
     dispatch(createMessage(newMessage));
+    setConversations((prev) => [...prev, newMessage]);
     setMessage("");
+    // ref.current.scrollIntoView({ block: "end", inline: "nearest" });
   };
-
-  // const [formName, setFormName] = useState("");
-  // if (messages?.length < 8) {
-  //   setFormName("absolute");
-  // } else {
-  //   setFormName("sticky");
-  // }
 
   return (
     <>
       <div className="chats">
-        {messages?.length > 0 ? (
-          messages.map((con, i) => (
+        {conversations?.length > 0 ? (
+          conversations.map((con, i) => (
             <div
               key={i}
               className={con.senderId === senderId ? "chat own" : "chat friend"}
@@ -93,7 +98,9 @@ const Conversations = ({ senderId, currentChat }) => {
         ) : (
           <span>no msz</span>
         )}
+        {/* <p ref={ref}></p> */}
       </div>
+
       <form onSubmit={handleSubmit} className="message-input">
         <input
           type="text"
