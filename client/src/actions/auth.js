@@ -43,6 +43,24 @@ export const userVerify = (id) => async (dispatch) => {
   }
 };
 
+export const checkSend = (email) => async (dispatch) => {
+  try {
+    const response = await api.checkSend(email);
+    return response.data.message;
+  } catch (error) {
+    return error.response?.data.message;
+  }
+};
+
+export const forgetPassword = (hashAndPass) => async (dispatch) => {
+  try {
+    const response = await api.forgetPassword(hashAndPass);
+    return response.data.message;
+  } catch (error) {
+    return error.response?.data.message;
+  }
+};
+
 export const getUserDetails = (id) => async (dispatch) => {
   try {
     const { data } = await api.getUserDetails(id);

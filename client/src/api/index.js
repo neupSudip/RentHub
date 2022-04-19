@@ -12,18 +12,22 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-export const fetchPosts = () => API.get("/posts");
+export const fetchPosts = (userType) => API.get(`/posts/${userType}`);
+
+// export const fetchPostsBySearch = () => API.get(`/posts/search`);
 
 export const fetchPostsBySearch = (searchQuery) =>
   API.get(
-    `/posts/search?location=${searchQuery.location || "none"}&title=${
-      searchQuery.title || "none"
-    }&tags=${searchQuery.tag || "none"}`
+    `/posts/search/${searchQuery.userType}/api?location=${
+      searchQuery.location || "none"
+    }&title=${searchQuery.title || "none"}&tags=${searchQuery.tag || "none"}`
   );
+
+// export const fetchPostsBySearch = (searchQuery) => API.get(`/posts/search/api`);
 
 export const fetchUserPosts = (id) => API.get(`/posts/user/${id}`);
 
-export const fetchPostById = (id) => API.get(`/posts/${id}`);
+export const fetchPostById = (id) => API.get(`/posts/post/${id}`);
 
 export const createPost = (newPost) => API.post("/posts", newPost);
 
@@ -41,6 +45,11 @@ export const signUp = (formData) => API.post("/user/signup", formData);
 
 export const verifyUser = (id) => API.get(`/user/verify/${id}`);
 
+export const checkSend = (email) => API.get(`/user/forget/${email}`);
+
+export const forgetPassword = (hashAndPass) =>
+  API.post("/user/forget-password", hashAndPass);
+
 export const signInGoogle = (formData) =>
   API.post("/user/signingoogle", formData);
 
@@ -52,8 +61,14 @@ export const createConversation = (members) =>
 export const fetchMessage = (conversationId) =>
   API.get(`/message/${conversationId}`);
 
-export const createMessage = (newMessage) => {
-  API.post("/message", newMessage);
-};
+export const createMessage = (newMessage) => API.post("/message", newMessage);
 
 export const getUserDetails = (id) => API.get(`/user/userdetails/${id}`);
+
+export const getSavedPosts = (userId) => API.get(`/posts/savedposts/${userId}`);
+
+export const savePost = (userId, postId) =>
+  API.post(`/posts/savepost/${userId}/${postId}`);
+
+export const removeSavedPost = (userId, postId) =>
+  API.delete(`/posts/remove/${userId}/${postId}`);

@@ -6,6 +6,12 @@ export default (state = [], action) => {
     case "FETCH_USER_POST":
       return { ...state, userPosts: action.payload };
 
+    case "GET_SAVED_POST":
+      return { savedPosts: action.payload };
+
+    case "SAVE_POST":
+      return { ...state, savedPosts: action.payload };
+
     case "FETCH_POST":
       return { ...state, post: action.payload };
 
@@ -29,8 +35,19 @@ export default (state = [], action) => {
       return state.map((post) =>
         post._id === action.payload._id ? action.payload : post
       );
+
     case "DELETE":
-      return state.filter((post) => post._id !== action.payload);
+      return {
+        userPosts: state.userPosts.filter(
+          (post) => post._id !== action.payload
+        ),
+      };
+    case "REMOVE_SAVED_POST":
+      return {
+        savedPosts: state.savedPosts.filter(
+          (post) => post._id !== action.payload
+        ),
+      };
     default:
       return state;
   }

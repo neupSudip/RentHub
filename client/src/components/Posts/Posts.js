@@ -1,35 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Post from "./Post";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getPosts, getPostsBySearch } from "../../actions/posts";
-
-// function useQuery() {
-//   return new URLSearchParams(useLocation().search);
-// }
+import Pagination from "./Pagination";
 
 const Posts = () => {
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
-
-  // const query = useQuery();
   const history = useNavigate();
   const dispatch = useDispatch();
-
   const [location, setLocation] = useState("");
   const [title, setTitle] = useState("");
   const [tag, setTag] = useState("");
-
-  // const searchQuery = query.get("searchQuery");
+  const userType = user.userType;
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (window.location.pathname === "/") {
-      dispatch(getPosts());
+      dispatch(getPosts(userType, setLoading));
     }
   }, [window.location.pathname]);
 
   const searchPosts = () => {
     if (location.trim() || title.trim() || tag) {
-      dispatch(getPostsBySearch({ location, title, tag }));
+      dispatch(
+        getPostsBySearch({ location, title, tag, userType }, setLoading)
+      );
       history(
         `/posts/search?location=${location || "none"}&title=${
           title || "none"
@@ -42,9 +39,17 @@ const Posts = () => {
 
   const { posts } = useSelector((state) => state.posts);
 
-  const post = posts?.filter(
-    (p) => p.creatorId !== user?._id && p.creatorType !== user?.userType
-  );
+  const totalPosts = posts?.length;
+
+  const lastPost = page * 2;
+  const firstPost = lastPost - 2;
+
+  const displayPosts = posts?.slice(firstPost, lastPost);
+
+  const paginate = (page) => {
+    setPage(page);
+  };
+
   return (
     <div>
       <div className="search-bar">
@@ -78,14 +83,18 @@ const Posts = () => {
           </button>
         </div>
       </div>
-
-      <div className="cards">
-        {!posts ? (
-          <h1>Sorry !! No Posts Found </h1>
-        ) : (
-          post?.map((post) => <Post key={post._id} post={post} />)
-        )}
-      </div>
+      {loading ? (
+        <h1>loading ....</h1>
+      ) : (
+        <div className="cards">
+          {!displayPosts ? (
+            <h1>Sorry !! No Posts Found </h1>
+          ) : (
+            displayPosts?.map((post) => <Post key={post._id} post={post} />)
+          )}
+        </div>
+      )}
+      <Pagination totalPosts={totalPosts} paginate={paginate} />
     </div>
   );
 };

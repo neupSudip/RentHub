@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-const sendEmail = async (email, value) => {
+const sendEmail = async (email, html, subject) => {
   try {
     const transporter = nodemailer.createTransport({
       service: "Gmail",
@@ -13,11 +13,11 @@ const sendEmail = async (email, value) => {
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
       to: email,
-      subject: "Email Verification",
-      html: `<h1>Please verify your email for RentHub.com by below link<h1/><br/><p>http://localhost:3000/verify/${value}<p/>`,
+      subject: subject,
+      html: html,
     });
   } catch (error) {
-    console.log(error);
+    console.log("error .................", error);
   }
 };
 

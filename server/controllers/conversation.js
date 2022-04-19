@@ -13,13 +13,24 @@ module.exports.getConversations = async (req, res) => {
 };
 
 module.exports.createConversation = async (req, res) => {
-  const newConversation = new Conversation({
-    members: req.body,
+  const conversation = await Conversation.find({
+    $and: [{ members: req.body[0] }, { members: req.body[1] }],
   });
-  try {
-    await newConversation.save();
-    res.status(201).json(newConversation);
-  } catch (error) {
-    res.status(409).json({ message: error.message });
+
+  console.log(conversation);
+
+  if (conversation.length === 0) {
+    console.log("check");
+    const newConversation = new Conversation({
+      members: req.body,
+    });
+    try {
+      await newConversation.save();
+      res.status(201).json(newConversation);
+    } catch (error) {
+      res.status(409).json({ message: error.message });
+    }
+  } else {
+    res.status(201).json(conversation);
   }
 };

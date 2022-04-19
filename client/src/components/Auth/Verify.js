@@ -7,7 +7,9 @@ const Verify = () => {
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
   const history = useNavigate();
-  const hash = window.location.pathname.slice(8, 72);
+
+  const ary = window.location.pathname.split("/");
+  const hash = ary[ary.length - 1];
 
   const handleClick = async () => {
     try {
@@ -25,12 +27,13 @@ const Verify = () => {
   }, [message]);
 
   return (
-    <div>
+    <div style={{ textAlign: "center" }}>
+      {message && <h2 style={{ color: "red" }}>{message}</h2>}
+
       <button onClick={handleClick}>Verify</button>
       <br />
       <br />
       <h1>Please click verify button to verify</h1>
-      {message && <h1 style={{ color: "red" }}>{message}</h1>}
     </div>
   );
 };

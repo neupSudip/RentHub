@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { GoogleLogin } from "react-google-login";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 
 import { AUTH_TOKEN } from "../../config.file";
 
-import { signin, signingoogle } from "../../actions/auth";
+import { signin, signingoogle, checkSend } from "../../actions/auth";
 import "./auth.css";
 
 const initialState = {
@@ -17,6 +17,8 @@ function Login() {
   const [formDate, setFormData] = useState(initialState);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+
+  const autoFocus = useCallback((el) => (el ? el.focus() : null), []);
 
   const dispatch = useDispatch();
   const history = useNavigate();
@@ -52,6 +54,19 @@ function Login() {
     }
   };
 
+  const handleForget = async () => {
+    if (formDate.email) {
+      try {
+        const response = await dispatch(checkSend(formDate.email));
+        setError(response);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setError("Please provide your email");
+    }
+  };
+
   return (
     <div>
       <form className="form-container" onSubmit={handleSubmit}>
@@ -65,6 +80,7 @@ function Login() {
           placeholder="Email Address*"
           label="Email Address"
           onChange={handleChange}
+          ref={autoFocus}
           required
         />
         <p>Password</p>
@@ -99,6 +115,19 @@ function Login() {
           onFailure={googleFailure}
           cookiePolicy={"single_host_origin"}
         />
+
+        <h3
+          style={{
+            textAlign: "center",
+            cursor: "pointer",
+            textDecoration: "underline",
+            fontSize: "1.2rem",
+          }}
+          onClick={handleForget}
+        >
+          Forget password ?
+        </h3>
+
         <span className="switch-auth">
           <Link to="/signup">
             Does not have account? &nbsp;&nbsp;&nbsp;&nbsp; Sign Up

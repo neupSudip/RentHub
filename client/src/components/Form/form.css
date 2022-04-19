@@ -73,3 +73,8 @@ button:hover {
     rgb(143, 81, 235, 0.5)
   );
 }
+
+.map {
+  height: 500px;
+  width: 100%;
+}

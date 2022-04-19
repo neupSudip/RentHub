@@ -11,7 +11,7 @@ const Post = ({ post }) => {
   const history = useNavigate();
 
   const openPost = () => {
-    history(`/posts/${post._id}`);
+    history(`/post/${post._id}`);
   };
 
   return (

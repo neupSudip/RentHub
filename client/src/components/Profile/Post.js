@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import "./profile.css";
 import { useDispatch } from "react-redux";
 
-import { deletePost } from "../../actions/posts";
+import { deletePost, removeSavedPost } from "../../actions/posts";
 import requiredImage from "../../images/required.jpg";
 
-const Post = ({ post, setCurrentId }) => {
+const Post = ({ post, setCurrentId, userId, type, setPostId, setRemoveId }) => {
   const dispatch = useDispatch();
   const history = useNavigate();
 
@@ -19,7 +19,7 @@ const Post = ({ post, setCurrentId }) => {
   };
 
   const openPost = () => {
-    history(`/posts/${post._id}`);
+    history(`/post/${post._id}`);
   };
 
   const handleDelete = () => {
@@ -28,36 +28,43 @@ const Post = ({ post, setCurrentId }) => {
     );
 
     if (confirm) {
+      setPostId(post._id);
       dispatch(deletePost(post._id));
     }
   };
 
+  const handleRemove = () => {
+    setRemoveId(post._id);
+    dispatch(removeSavedPost(userId, post._id));
+  };
+
   return (
     <div className="grid-item">
-      {post.image ? (
-        <img
-          onClick={openPost}
-          className="profile-post-img"
-          src={post.image}
-          alt={post.title}
-        />
-      ) : (
-        <img
-          className="profile-post-img"
-          onClick={openPost}
-          src={requiredImage}
-          alt={post.title}
-        />
-      )}
+      <div onClick={openPost}>
+        {type === "user" && (
+          <img
+            className="profile-post-img"
+            src={post.image ? post.image : requiredImage}
+            alt={post.title}
+          />
+        )}
 
-      <h1> {post.title}</h1>
-      <h3> {`NRP ${post.amount} (${post.negotiable})`}</h3>
-      <h3>{post.location}</h3>
-      {post.people && <h3>Person: {post.people}</h3>}
-      <h3>{post.tags.map((tag) => `#${tag} `)}</h3>
-      <h3>{date}</h3>
-      <button onClick={updatePost}>update</button>
-      <button onClick={handleDelete}>Delete</button>
+        <h1> {post.title}</h1>
+        <h3> {`NRP ${post.amount} (${post.negotiable})`}</h3>
+        <h3>{post.location}</h3>
+        {post.people && <h3>Person: {post.people}</h3>}
+        <h3>{post.tags.map((tag) => `#${tag} `)}</h3>
+        <h3>{date}</h3>
+      </div>
+
+      {type === "user" ? (
+        <>
+          <button onClick={updatePost}>update</button>
+          <button onClick={handleDelete}>Delete</button>
+        </>
+      ) : (
+        <button onClick={handleRemove}>remove</button>
+      )}
     </div>
   );
 };

@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import FileBase from "react-file-base64";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
 import { useNavigate } from "react-router-dom";
+import Map from "./Map";
+
+// AIzaSyDF_8HnCIhIz_HKtASTdt6lsiRDha_-1hc
 
 import "./form.css";
 
 const Form = ({ currentId, setCurrentId }) => {
-  const autoFocus = useCallback((el) => (el ? el.focus() : null), []);
-
   const user = JSON.parse(localStorage.getItem("profile"));
   const [error, setError] = useState("");
 
@@ -37,18 +38,14 @@ const Form = ({ currentId, setCurrentId }) => {
     if (post) setPostDate(post);
   }, [post]);
 
-  navigator.geolocation.getCurrentPosition(function (position) {
-    setPostDate({
-      ...postData,
-      coords: `${position.coords.latitude},${position.coords.longitude}`,
-    });
-  });
-
   const handleLocation = (e) => {
     e.preventDefault();
-    setPostDate({
-      ...postData,
-      coords: "hello",
+
+    navigator.geolocation.getCurrentPosition(function (position) {
+      setPostDate({
+        ...postData,
+        coords: `${position.coords.latitude},${position.coords.longitude}`,
+      });
     });
   };
 
@@ -103,17 +100,16 @@ const Form = ({ currentId, setCurrentId }) => {
         {error && <h3 className="error-message">{error}</h3>}
 
         <h1>{currentId ? "Update" : "Create"} Post</h1>
-        <p>Insert Title: 2 Rooms with flat</p>
-        <input
-          type="text"
-          name="title"
-          label="title"
-          placeholder="Insert Title"
-          value={postData.title}
+        <p>Select a title</p>
+        <select
           onChange={(e) => setPostDate({ ...postData, title: e.target.value })}
-          ref={autoFocus}
-          required
-        />
+        >
+          <option value="1 BHK">1 BHK</option>
+          <option value="2 BHK">2 BHK</option>
+          <option value="3 BHK">3 BHK</option>
+          <option value="1 Rooom">1 Room</option>
+          <option value="2 Rooms">2 Rooms</option>
+        </select>
         <p>Amount in Rupees</p>
         <input
           type="number"
@@ -124,7 +120,7 @@ const Form = ({ currentId, setCurrentId }) => {
           onChange={(e) => setPostDate({ ...postData, amount: e.target.value })}
           required
         />
-        <p>Location: Naxal, Kathmandu)</p>
+        <p>Location: (Naxal, Kathmandu)</p>
         <input
           type="text"
           name="location"
@@ -181,6 +177,9 @@ const Form = ({ currentId, setCurrentId }) => {
             <button onClick={handleLocation}>
               Current location: {postData.coords}
             </button>
+            {/* <div className="map"></div> */}
+            <Map />
+
             <p>Add images of Rooms</p>
             <FileBase
               type="file"

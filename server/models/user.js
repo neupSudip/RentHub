@@ -26,6 +26,9 @@ const userSchema = mongoose.Schema({
   image: {
     type: String,
   },
+  savedPost: {
+    type: [String],
+  },
 });
 
 const User = mongoose.model("User", userSchema);

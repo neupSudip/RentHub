@@ -1,10 +1,12 @@
+const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-var crypto = require("crypto");
+const crypto = require("crypto");
 
 const User = require("../models/user");
 const Temp = require("../models/tempUser");
 const sendEmail = require("../controllers/sendEmail");
+const { use } = require("../routes/user");
 
 module.exports.signin = async (req, res) => {
   const { email, password } = req.body;
@@ -29,7 +31,16 @@ module.exports.signin = async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRES }
     );
 
-    res.status(200).json({ result: user, token });
+    const storage = {
+      _id: user._id,
+      email: user.email,
+      image: user.image,
+      isVerified: user.isVerified,
+      name: user.name,
+      userType: user.userType,
+    };
+
+    res.status(200).json({ result: storage, token });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }
@@ -48,7 +59,16 @@ module.exports.signingoogle = async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRES }
     );
 
-    res.status(200).json({ result: user, token });
+    const storage = {
+      _id: user._id,
+      email: user.email,
+      image: user.image,
+      isVerified: user.isVerified,
+      name: user.name,
+      userType: user.userType,
+    };
+
+    res.status(200).json({ result: storage, token });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }
@@ -80,17 +100,28 @@ module.exports.signup = async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRES }
     );
 
-    var id = crypto.randomBytes(20).toString("hex");
-    var value = result._id.toString().concat(id);
+    const hex = crypto.randomBytes(20).toString("hex");
+    const hash = result._id.toString().concat(hex);
 
     const temp = new Temp({
       userId: result._id.toString(),
-      hash: value,
+      hash: hash,
     });
 
     await temp.save();
-    sendEmail(email, value);
-    res.status(200).json({ result, token });
+
+    const html = `<h1>Please verify your email for RentHub.com by below link<h1/><br/><p>http://localhost:3000/verify/${hash}<p/>`;
+    sendEmail(email, html, "Email Verification");
+
+    const storage = {
+      _id: result._id,
+      email: result.email,
+      image: result.image,
+      isVerified: result.isVerified,
+      name: result.name,
+      userType: result.userType,
+    };
+    res.status(200).json({ storage, token });
   } catch (error) {
     res.status(500).json({ message: "something went wrong" });
   }
@@ -99,6 +130,10 @@ module.exports.signup = async (req, res) => {
 module.exports.verifyuser = async (req, res) => {
   const { value } = req.params;
   const id = value.slice(0, 24);
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ message: "Invalid Token" });
+  }
+
   const user = await User.findOne({ _id: id });
 
   if (!user) return res.status(404).json({ message: "Invalid Token" });
@@ -111,6 +146,62 @@ module.exports.verifyuser = async (req, res) => {
       .json({ message: "Invalid verification credentials" });
   } else {
     user.isVerified = true;
+    await tempValue.remove();
+    await user.save();
+    res.status(200).json({ message: "Redirecting..." });
+  }
+};
+
+module.exports.checkSend = async (req, res) => {
+  const { email } = req.params;
+
+  try {
+    const user = await User.findOne({ email: email });
+    if (!user) return res.status(404).json({ message: "User doesnot exist" });
+
+    const tempValue = await Temp.findOne({ userId: user._id });
+    if (tempValue)
+      return res.status(404).json({ message: "Restricted multiple attempts" });
+
+    const hex = crypto.randomBytes(20).toString("hex");
+    const hash = user._id.toString().concat(hex);
+
+    const temp = new Temp({
+      userId: user._id.toString(),
+      hash: hash,
+    });
+
+    await temp.save();
+    const html = `<h1>Please use the link below to set new password<h1/><br/><p>http://localhost:3000/forget-password/${hash}<p/>`;
+
+    sendEmail(email, html, "Password Reset");
+    res.status(200).json({ message: "Please check your email" });
+  } catch (error) {
+    res.status(500).json({ message: "something went wrong" });
+  }
+};
+
+module.exports.forgetPassword = async (req, res) => {
+  const { hash, pass } = req.body;
+  const id = hash.slice(0, 24);
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ message: "Invalid Token" });
+  }
+
+  const user = await User.findOne({ _id: id });
+
+  if (!user) return res.status(404).json({ message: "Invalid Token" });
+
+  const tempValue = await Temp.findOne({ userId: id, hash: hash });
+
+  if (!tempValue) {
+    return res
+      .status(404)
+      .json({ message: "Invalid verification credentials" });
+  } else {
+    const hashedPassword = await bcrypt.hash(pass, 12);
+    user.password = hashedPassword;
+
     await tempValue.remove();
     await user.save();
     res.status(200).json({ message: "Redirecting..." });

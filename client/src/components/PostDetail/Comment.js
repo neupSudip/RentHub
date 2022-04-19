@@ -23,13 +23,8 @@ const Comment = ({ post }) => {
   };
 
   const handleKey = async (e) => {
-    if (e.keyCode === 13) {
-      const finalComment = `${user.name}: ${comment}`;
-      const newComments = await dispatch(commentPost(post._id, finalComment));
-      setComments(newComments);
-      setComment("");
-
-      ref.current.scrollIntoView({ behaviour: "smooth" });
+    if (e.charCode === 13) {
+      handleClick();
     }
   };
 
@@ -43,7 +38,6 @@ const Comment = ({ post }) => {
               comments?.map((cmt, i) => (
                 <div key={i}>
                   <p>
-                    {" "}
                     <span> {cmt.split(": ")[0]}: </span> {cmt.split(":")[1]}{" "}
                   </p>
                 </div>

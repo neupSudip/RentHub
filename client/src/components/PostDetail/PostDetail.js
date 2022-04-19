@@ -1,12 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { useParams, useNavigate } from "react-router-dom";
-import { getPost, getPostsBySearch } from "../../actions/posts";
+import {
+  getPost,
+  getPostsBySearch,
+  getSavedPosts,
+  savePost,
+} from "../../actions/posts";
 import { createConversation } from "../../actions/message";
 import Comment from "./Comment";
 
 import requiredImage from "../../images/required.jpg";
+import Map from "../GoogleMap/Map";
 
 import "./postdetails.css";
 
@@ -15,47 +21,60 @@ const PostDetail = () => {
   const dispatch = useDispatch();
   const history = useNavigate();
   const { id } = useParams();
+  const [loading, setLoading] = useState(true);
 
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
 
+  const userType = user.userType;
+
   useEffect(() => {
-    dispatch(getPost(id));
+    dispatch(getPost(id, setLoading));
   }, [id]);
 
   const openPost = (id) => {
-    history(`/posts/${id}`);
+    history(`/post/${id}`);
   };
 
   const members = [user?._id, post?.creatorId];
 
-  const createConversations = () => {
-    dispatch(createConversation(members));
+  const createConversations = async () => {
+    dispatch(createConversation(members, history));
   };
 
   useEffect(() => {
     if (post) {
       dispatch(
-        getPostsBySearch({
-          location: post.location,
-          title: post.title,
-          tags: "none",
-        })
+        getPostsBySearch(
+          {
+            location: post.location,
+            title: post.title,
+            tags: "none",
+            userType,
+          },
+          setLoading
+        )
       );
     }
   }, [post]);
 
   const recommend = posts?.filter(
-    (p) =>
-      p.creatorId !== user?._id &&
-      p.creatorType !== user?.userType &&
-      p._id !== post?._id
+    (p) => p.creatorId !== user?._id && p._id !== post?._id
   );
+
+  const handleSavePost = () => {
+    dispatch(savePost(user?._id, post?._id));
+  };
+
+  // const { savedPosts } = useSelector((state) => state.posts);
+
+  // console.log(savedPosts.indexOf(id) > -1);
 
   return (
     <div className="post-details">
-      {!post ? (
-        <h1>page not found</h1>
-      ) : (
+      {loading && <h1>Loading ....</h1>}
+
+      {!loading && !post && <h1>Page not found</h1>}
+      {post && (
         <>
           <h1 className="creator-name">
             {`${post.creatorName} || ${moment(post.createdAt).format(
@@ -80,11 +99,13 @@ const PostDetail = () => {
           <h2>{post.location}</h2>
           <div className="location-booking">
             <div className="geo-location">
-              Geo location <br /> this section is not created yet
+              {/* <Map cords={post.cords} /> */}
             </div>
-            <div className="booking-section">
-              Booking Section <br /> this section is not created yet
-            </div>
+            {post.creatorId !== user._id && (
+              <div className="booking-section">
+                <button onClick={handleSavePost}>save post</button>
+              </div>
+            )}
           </div>
           <p className="discription">{post.discription}</p>
           <h2 className="facilities">Facilities: </h2>
@@ -96,7 +117,7 @@ const PostDetail = () => {
         </>
       )}
 
-      {post && <Comment post={post} />}
+      {post?._id === id && <Comment post={post} />}
 
       {/* Recommendation Section */}
 

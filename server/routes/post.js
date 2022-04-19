@@ -9,17 +9,20 @@ const {
   updatePost,
   postComment,
   deletePost,
+  getSavedPosts,
+  savePost,
+  removePost,
 } = require("../controllers/post");
 
 const { auth } = require("../middlewares/auth");
 
 const router = express.Router();
 
-router.get("/", auth, getPosts);
+router.get("/:type", auth, getPosts);
 
-router.get("/search", auth, getPostsBySearch);
+router.get("/search/:userType/api", auth, getPostsBySearch);
 
-router.get("/:id", auth, getPost);
+router.get("/post/:id", auth, getPost);
 
 router.get("/user/:id", auth, getUserPosts);
 
@@ -30,5 +33,11 @@ router.patch("/:id", auth, updatePost);
 router.post("/:id/comment", auth, postComment);
 
 router.delete("/:id", auth, deletePost);
+
+router.get("/savedposts/:userId", auth, getSavedPosts);
+
+router.post("/savepost/:userId/:postId", auth, savePost);
+
+router.delete("/remove/:userId/:postId", auth, removePost);
 
 module.exports = router;

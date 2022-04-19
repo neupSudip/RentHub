@@ -11,6 +11,7 @@ import PostDetail from "./components/PostDetail/PostDetail";
 import Welcome from "./components/Landing/Welcome";
 import Verify from "./components/Auth/Verify";
 import Message from "./components/message/Message";
+import Forget from "./components/Auth/Forget";
 
 const App = () => {
   const [currentId, setCurrentId] = useState(null);
@@ -35,12 +36,18 @@ const App = () => {
         />
 
         <Route
+          path="/posts/page/:id"
+          exact
+          element={!user ? <Navigate to="/welcome" /> : <Posts />}
+        />
+
+        <Route
           path="/posts/search"
           exact
           element={!user ? <Navigate to="/welcome" /> : <Posts />}
         />
         <Route
-          path="/posts/:id"
+          path="/post/:id"
           exact
           element={!user ? <Navigate to="/welcome" /> : <PostDetail />}
         />
@@ -103,6 +110,7 @@ const App = () => {
         />
 
         <Route path="/verify/:id" element={<Verify />} />
+        <Route path="/forget-password/:id" element={<Forget />} />
       </Routes>
     </BrowserRouter>
   );

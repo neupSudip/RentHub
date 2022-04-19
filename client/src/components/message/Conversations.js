@@ -7,9 +7,8 @@ import { createMessage, getMessage } from "../../actions/message";
 import { io } from "socket.io-client";
 
 const Conversations = ({ senderId, currentChat }) => {
-  const { messages } = useSelector((state) => state.messages);
-
   const [message, setMessage] = useState("");
+  const [conversations, setConversations] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState({
     senderId: "",
     text: "",
@@ -18,11 +17,16 @@ const Conversations = ({ senderId, currentChat }) => {
 
   const { conversationId } = useParams();
 
+  useEffect(() => {
+    dispatch(getMessage(conversationId));
+    // ref.current.scrollIntoView({ block: "end", inline: "nearest" });
+  }, [conversationId]);
+
+  const { messages } = useSelector((state) => state.messages);
+
   const dispatch = useDispatch();
   const socket = useRef();
   const ref = useRef();
-
-  const [conversations, setConversations] = useState("");
 
   useEffect(() => {
     setConversations(messages);
@@ -50,11 +54,6 @@ const Conversations = ({ senderId, currentChat }) => {
   useEffect(() => {
     socket.current.emit("addUser", senderId);
   }, [senderId]);
-
-  useEffect(() => {
-    dispatch(getMessage(conversationId));
-    // ref.current.scrollIntoView({ block: "end", inline: "nearest" });
-  }, [conversationId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

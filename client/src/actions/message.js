@@ -28,10 +28,11 @@ export const getMessage = (conversationId) => async (dispatch) => {
   }
 };
 
-export const createConversation = (members) => async (dispatch) => {
+export const createConversation = (members, history) => async (dispatch) => {
   try {
     const { data } = await api.createConversation(members);
     dispatch({ type: "CREATE_CONVERSATION", payload: data });
+    history(`/message/${data[0]?._id}`);
   } catch (error) {
     console.log(error);
   }
