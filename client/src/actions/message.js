@@ -12,17 +12,17 @@ export const getConversation = (userId) => async (dispatch) => {
 export const createMessage = (newMessage) => async (dispatch) => {
   try {
     const { data } = await api.createMessage(newMessage);
-    console.log(data);
-    dispatch({ type: "CREATE_MESSAGE", payload: data });
+    // dispatch({ type: "CREATE_MESSAGE", payload: data });
   } catch (error) {
     console.log(error);
   }
 };
 
-export const getMessage = (conversationId) => async (dispatch) => {
+export const getMessage = (conversationId, setLoading) => async (dispatch) => {
   try {
     const { data } = await api.fetchMessage(conversationId);
     dispatch({ type: "GET_MESSAGE", payload: data });
+    setLoading(false);
   } catch (error) {
     console.log(error);
   }
@@ -32,7 +32,7 @@ export const createConversation = (members, history) => async (dispatch) => {
   try {
     const { data } = await api.createConversation(members);
     dispatch({ type: "CREATE_CONVERSATION", payload: data });
-    history(`/message/${data[0]?._id}`);
+    history(`/message`);
   } catch (error) {
     console.log(error);
   }

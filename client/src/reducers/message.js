@@ -4,15 +4,12 @@ const messages = (state = [], action) => {
       return { ...state, conversations: action.payload };
 
     case "GET_CONVERSATION":
-      console.log(action.payload);
       return { ...state, conversations: action.payload };
 
     case "CREATE_MESSAGE":
-      console.log(action.payload);
       return { ...state, messages: action.payload };
 
     case "GET_MESSAGE":
-      console.log(action.payload);
       return { ...state, messages: action.payload };
 
     default:

@@ -1,45 +1,48 @@
 import { React, useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import "./conversations.css";
 import { format } from "timeago.js";
 import { createMessage, getMessage } from "../../actions/message";
 import { io } from "socket.io-client";
 
-const Conversations = ({ senderId, currentChat }) => {
+const Conversations = ({ senderId, currentChat, friend }) => {
+  const { conversationId } = useParams();
   const [message, setMessage] = useState("");
   const [conversations, setConversations] = useState("");
-  const [arrivalMessage, setArrivalMessage] = useState({
-    senderId: "",
-    text: "",
-    time: "",
-  });
-
-  const { conversationId } = useParams();
-
-  useEffect(() => {
-    dispatch(getMessage(conversationId));
-    // ref.current.scrollIntoView({ block: "end", inline: "nearest" });
-  }, [conversationId]);
-
-  const { messages } = useSelector((state) => state.messages);
+  const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
   const socket = useRef();
   const ref = useRef();
 
   useEffect(() => {
+    dispatch(getMessage(conversationId, setLoading));
+    ref?.current?.scrollIntoView({ block: "end", inline: "nearest" });
+  }, [conversationId]);
+
+  const { messages } = useSelector((state) => state.messages);
+
+  useEffect(() => {
     setConversations(messages);
   }, [messages]);
+
+  const [arrivalMessage, setArrivalMessage] = useState({
+    senderId: "",
+    text: "",
+    time: "",
+  });
 
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
     socket.current.on("getMessage", (data) => {
-      console.log(data);
+      console.log("arrival ", data);
       setArrivalMessage({
         senderId: data.senderId,
         text: data.text,
-        time: Date.now(),
+        time: data.time,
       });
     });
   }, []);
@@ -48,7 +51,7 @@ const Conversations = ({ senderId, currentChat }) => {
     arrivalMessage &&
       currentChat?.members.includes(arrivalMessage.senderId) &&
       setConversations((prev) => [...prev, arrivalMessage]);
-    // ref.current.scrollIntoView({ block: "end", inline: "nearest" });
+    ref.current.scrollIntoView({ block: "end", inline: "nearest" });
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
@@ -66,6 +69,7 @@ const Conversations = ({ senderId, currentChat }) => {
       senderId,
       receiverId,
       text: message,
+      time: Date.now(),
     });
 
     const newMessage = {
@@ -76,15 +80,23 @@ const Conversations = ({ senderId, currentChat }) => {
     };
 
     dispatch(createMessage(newMessage));
-    setConversations((prev) => [...prev, newMessage]);
+    setConversations((pre) => [...pre, newMessage]);
     setMessage("");
-    // ref.current.scrollIntoView({ block: "end", inline: "nearest" });
+    ref.current.scrollIntoView(false);
   };
 
   return (
     <>
       <div className="chats">
-        {conversations?.length > 0 ? (
+        <h1 className="friend-name">{friend}</h1>
+        {loading && (
+          <CircularProgress
+            style={{ position: "absolute", top: "50vh", left: "50%" }}
+            size="8rem"
+            sx={{ color: "green" }}
+          />
+        )}
+        {!loading && conversations?.length > 0 ? (
           conversations.map((con, i) => (
             <div
               key={i}
@@ -95,9 +107,8 @@ const Conversations = ({ senderId, currentChat }) => {
             </div>
           ))
         ) : (
-          <span>no msz</span>
+          <h2 className="no-conversation">You dont have any conversation</h2>
         )}
-        {/* <p ref={ref}></p> */}
       </div>
 
       <form onSubmit={handleSubmit} className="message-input">
@@ -105,12 +116,13 @@ const Conversations = ({ senderId, currentChat }) => {
           type="text"
           name="message"
           label="message"
-          placeholder="type a message"
+          placeholder="Type a message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           required
         />
         <button>send</button>
+        <div className="ref" ref={ref}></div>
       </form>
     </>
   );

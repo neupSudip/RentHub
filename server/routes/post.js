@@ -12,6 +12,8 @@ const {
   getSavedPosts,
   savePost,
   removePost,
+  hidePost,
+  bookPost,
 } = require("../controllers/post");
 
 const { auth } = require("../middlewares/auth");
@@ -39,5 +41,9 @@ router.get("/savedposts/:userId", auth, getSavedPosts);
 router.post("/savepost/:userId/:postId", auth, savePost);
 
 router.delete("/remove/:userId/:postId", auth, removePost);
+
+router.put("/hide/:postId", auth, hidePost);
+
+router.post("/bookpost/:userId/:postId", auth, bookPost);
 
 module.exports = router;

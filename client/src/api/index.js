@@ -14,16 +14,12 @@ API.interceptors.request.use((req) => {
 
 export const fetchPosts = (userType) => API.get(`/posts/${userType}`);
 
-// export const fetchPostsBySearch = () => API.get(`/posts/search`);
-
 export const fetchPostsBySearch = (searchQuery) =>
   API.get(
     `/posts/search/${searchQuery.userType}/api?location=${
       searchQuery.location || "none"
     }&title=${searchQuery.title || "none"}&tags=${searchQuery.tag || "none"}`
   );
-
-// export const fetchPostsBySearch = (searchQuery) => API.get(`/posts/search/api`);
 
 export const fetchUserPosts = (id) => API.get(`/posts/user/${id}`);
 
@@ -72,3 +68,8 @@ export const savePost = (userId, postId) =>
 
 export const removeSavedPost = (userId, postId) =>
   API.delete(`/posts/remove/${userId}/${postId}`);
+
+export const hidePost = (postId) => API.put(`/posts/hide/${postId}`);
+
+export const bookPost = (userId, postId) =>
+  API.post(`/posts/bookpost/${userId}/${postId}`);

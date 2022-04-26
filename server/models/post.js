@@ -4,6 +4,10 @@ const postSchema = mongoose.Schema({
   creatorName: String,
   creatorId: String,
   creatorType: String,
+  status: {
+    type: Boolean,
+    default: true,
+  },
   title: {
     type: String,
     trim: true,
@@ -20,12 +24,17 @@ const postSchema = mongoose.Schema({
   coords: String,
   negotiable: String,
   image: String,
+  image2: String,
   discription: {
     type: String,
     trim: true,
   },
   people: Number,
   comments: { type: [String], default: [] },
+  booked: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: {
     type: Date,
     default: new Date(),

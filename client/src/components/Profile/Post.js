@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import "./profile.css";
 import { useDispatch } from "react-redux";
 
-import { deletePost, removeSavedPost } from "../../actions/posts";
+import { deletePost, hidePost } from "../../actions/posts";
 import requiredImage from "../../images/required.jpg";
+import "./profile.css";
 
-const Post = ({ post, setCurrentId, userId, type, setPostId, setRemoveId }) => {
+import { Helmet } from "react-helmet";
+
+const Post = ({ post, setCurrentId, setPostId, setHideId }) => {
   const dispatch = useDispatch();
   const history = useNavigate();
 
-  const date = moment("2018-05-18T04:00:00.000Z").format("DD MMM, YYYY");
+  const date = moment().format("DD MMM, YYYY");
 
   const updatePost = () => {
     setCurrentId(post._id);
@@ -33,38 +35,54 @@ const Post = ({ post, setCurrentId, userId, type, setPostId, setRemoveId }) => {
     }
   };
 
-  const handleRemove = () => {
-    setRemoveId(post._id);
-    dispatch(removeSavedPost(userId, post._id));
+  const handleHide = () => {
+    setHideId(post._id);
+    dispatch(hidePost(post._id));
   };
 
   return (
     <div className="grid-item">
+      <Helmet>
+        <title>Profile</title>
+      </Helmet>
       <div onClick={openPost}>
-        {type === "user" && (
-          <img
-            className="profile-post-img"
-            src={post.image ? post.image : requiredImage}
-            alt={post.title}
-          />
-        )}
+        <img
+          className="profile-post-img"
+          src={post.image ? post.image : requiredImage}
+          alt={post.title}
+        />
 
-        <h1> {post.title}</h1>
-        <h3> {`NRP ${post.amount} (${post.negotiable})`}</h3>
-        <h3>{post.location}</h3>
-        {post.people && <h3>Person: {post.people}</h3>}
-        <h3>{post.tags.map((tag) => `#${tag} `)}</h3>
+        {post.people ? (
+          <h1>{`${post.title}, ${post.people} people`}</h1>
+        ) : (
+          <h1> {post.title}</h1>
+        )}
+        <h3 className="price-tag">
+          {" "}
+          {`NRP ${post?.amount} (${post?.negotiable})`}
+        </h3>
+        <h3>{post?.location}</h3>
+
+        <h3 className="blue-tag">{post?.tags.map((tag) => `#${tag} `)}</h3>
         <h3>{date}</h3>
       </div>
 
-      {type === "user" ? (
-        <>
-          <button onClick={updatePost}>update</button>
-          <button onClick={handleDelete}>Delete</button>
-        </>
+      {post.status ? (
+        <button className="btn-hide" onClick={handleHide}>
+          Hide
+        </button>
       ) : (
-        <button onClick={handleRemove}>remove</button>
+        <button className="btn-show" onClick={handleHide}>
+          Show
+        </button>
       )}
+
+      <button className="btn-update" onClick={updatePost}>
+        update
+      </button>
+      <button className="btn-delete" onClick={handleDelete}>
+        Delete
+      </button>
     </div>
   );
 };

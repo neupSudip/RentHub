@@ -7,3 +7,6 @@ node_modules
 
 config.file.js
 /client/config.file.js
+
+Khalti.key.js
+/client/src/components/Khalti/Khalti.key.js

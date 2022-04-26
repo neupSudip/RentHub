@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getUserDetails } from "../../actions/auth";
 import "./connections.css";
 
-const Connections = ({ conversation, setCurrentChat, userId }) => {
+const Connections = ({ conversation, setCurrentChat, setFriend, userId }) => {
   const [userDetails, setUserDetails] = useState("");
 
   const dispatch = useDispatch();
@@ -20,6 +20,7 @@ const Connections = ({ conversation, setCurrentChat, userId }) => {
 
   const handleClick = () => {
     setCurrentChat(conversation);
+    setFriend(userDetails[0]?.name);
     history(`/message/${conversation._id}`);
   };
 

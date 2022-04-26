@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import { getUserPosts, getSavedPosts } from "../../actions/posts";
 import "./profile.css";
 
 import Post from "./Post";
+import SavedPosts from "./SavedPosts";
 
 function Profile({ setCurrentId, setCurrentUser }) {
   const dispatch = useDispatch();
@@ -14,7 +17,10 @@ function Profile({ setCurrentId, setCurrentUser }) {
   const [type, setType] = useState("user");
   const [removeId, setRemoveId] = useState(null);
   const [postId, setPostId] = useState(null);
+  const [hideId, setHideId] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [showPost, setShowPost] = useState(false);
 
   useEffect(() => {
     if (type === "user") {
@@ -37,10 +43,17 @@ function Profile({ setCurrentId, setCurrentUser }) {
       dispatch({ type: "DELETE", payload: postId });
       setPostId(null);
     }
-  }, [removeId, postId]);
 
-  const { userPosts } = useSelector((state) => state.posts);
-  const { savedPosts } = useSelector((state) => state.posts);
+    if (hideId) {
+      dispatch(getUserPosts(user?.result._id));
+      dispatch({ type: "HIDE_POST", payload: hideId });
+      setHideId(null);
+    }
+  }, [removeId, postId, hideId]);
+
+  const { userPosts, savedPosts, bookedPosts } = useSelector(
+    (state) => state.posts
+  );
 
   const logout = () => {
     dispatch({ type: "LOGOUT" });
@@ -52,11 +65,39 @@ function Profile({ setCurrentId, setCurrentUser }) {
   const changeType = (type) => {
     setType(type);
   };
+
+  const handleShow = () => {
+    setShowPost((prev) => !prev);
+  };
+
   return (
-    <div>
+    <div className="profile-btn">
       <button className="logout-btn" onClick={logout}>
         Log Out
       </button>
+
+      {user.type === "renter" && (
+        <button className="book-show-btn" onClick={handleShow}>
+          Booked posts
+        </button>
+      )}
+
+      {showPost && bookedPosts?.length > 0 && Array.isArray(bookedPosts) && (
+        <div className="booked-posts">
+          {bookedPosts?.map((post) => (
+            <div className="booked-post" key={post._id}>
+              <h3>{post.title}</h3>
+              <p>{post.creatorName}</p>
+              <p>{post.location}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {showPost && !bookedPosts?.length > 0 && Array.isArray(bookedPosts) && (
+        <h1>No Booked Posts</h1>
+      )}
+
       <div className="profile">
         <img
           className="profile-img"
@@ -76,41 +117,46 @@ function Profile({ setCurrentId, setCurrentUser }) {
       </h1>
 
       <div className="grid-container">
-        {loading && <h1>loading...</h1>}
-        {type === "user" ? (
-          <>
-            {!userPosts?.length ? (
-              <h1>There is no userPosts</h1>
-            ) : (
-              userPosts?.map((post) => (
-                <Post
-                  key={post._id}
-                  post={post}
-                  setCurrentId={setCurrentId}
-                  userId={user?.result._id}
-                  type={type}
-                  setPostId={setPostId}
-                  setRemoveId={setRemoveId}
-                />
-              ))
-            )}
-          </>
+        {loading ? (
+          <CircularProgress
+            style={{ position: "absolute", top: "50vh", left: "50%" }}
+            size="8rem"
+            sx={{ color: "green" }}
+          />
         ) : (
           <>
-            {savedPosts?.length > 0 && Array.isArray(savedPosts) ? (
-              savedPosts?.map((post) => (
-                <Post
-                  key={post._id}
-                  post={post}
-                  setCurrentId={setCurrentId}
-                  userId={user?.result._id}
-                  type={type}
-                  setPostId={setPostId}
-                  setRemoveId={setRemoveId}
-                />
-              ))
+            {type === "user" ? (
+              <>
+                {!userPosts?.length ? (
+                  <h1>There is no userPosts</h1>
+                ) : (
+                  userPosts?.map((post) => (
+                    <Post
+                      key={post?._id}
+                      post={post}
+                      setCurrentId={setCurrentId}
+                      userId={user?.result._id}
+                      setPostId={setPostId}
+                      setHideId={setHideId}
+                    />
+                  ))
+                )}
+              </>
             ) : (
-              <h1>There is no saved Posts</h1>
+              <>
+                {savedPosts?.length > 0 && Array.isArray(savedPosts) ? (
+                  savedPosts?.map((post) => (
+                    <SavedPosts
+                      key={post?._id}
+                      post={post}
+                      userId={user?.result._id}
+                      setRemoveId={setRemoveId}
+                    />
+                  ))
+                ) : (
+                  <h1>There is no saved Posts</h1>
+                )}
+              </>
             )}
           </>
         )}

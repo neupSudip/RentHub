@@ -6,6 +6,7 @@ module.exports.getPosts = async (req, res) => {
   try {
     const posts = await Post.find({
       creatorType: { $ne: req.params.type },
+      status: true,
     }).sort({ _id: -1 });
     res.status(200).json(posts);
   } catch (error) {
@@ -26,7 +27,7 @@ module.exports.getUserPosts = async (req, res) => {
 module.exports.getPost = async (req, res) => {
   const { id } = req.params;
   try {
-    const post = await Post.findById({ _id: id });
+    const post = await Post.findById({ _id: id, status: true });
     res.json(post);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -40,6 +41,7 @@ module.exports.getPostsBySearch = async (req, res) => {
     const location1 = new RegExp(location, "i");
     const title1 = new RegExp(title, "i");
     const posts = await Post.find({
+      status: true,
       creatorType: { $ne: req.params.userType },
       $or: [
         { location: location1 },
@@ -109,16 +111,25 @@ module.exports.getSavedPosts = async (req, res) => {
   try {
     const posts = await User.find(
       { _id: req.params.userId },
-      { _id: 0, savedPost: 1 }
+      { _id: 0, savedPost: 1, bookedPosts: 1 }
     );
+
     let savedPosts = [];
+    let bookedPosts = [];
 
     for (const id of posts[0].savedPost) {
-      const post = await Post.findById(id);
-      savedPosts.push(post);
+      const post = await Post.find({ _id: id, status: true });
+      savedPosts.push(...post);
     }
 
-    res.status(200).json(savedPosts);
+    for (const id of posts[0].bookedPosts) {
+      const post = await Post.find({ _id: id });
+      bookedPosts.push(...post);
+    }
+
+    // console.log(savedPosts, bookedPosts);
+
+    res.status(200).json([savedPosts, bookedPosts]);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -157,6 +168,42 @@ module.exports.removePost = async (req, res) => {
 
   try {
     await User.updateMany({ _id: userId }, { $pull: { savedPost: postId } });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+module.exports.hidePost = async (req, res) => {
+  const { postId } = req.params;
+  try {
+    const post = await Post.findById({ _id: postId });
+    if (post) {
+      post.status = !post.status;
+      await post.save();
+      res.status(201).json(post);
+    }
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+module.exports.bookPost = async (req, res) => {
+  const { userId, postId } = req.params;
+
+  try {
+    const updatedUser = await User.updateOne(
+      { _id: userId },
+      { $push: { bookedPosts: postId }, $pull: { savedPost: postId } }
+    );
+
+    const post = await Post.findById({ _id: postId });
+    console.log(post.booked);
+    if (post) {
+      post.booked = true;
+      await post.save();
+    }
+
+    res.status(201).json(updatedUser);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

@@ -3,20 +3,23 @@ import FileBase from "react-file-base64";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
 import { useNavigate } from "react-router-dom";
-import Map from "./Map";
 
-// AIzaSyDF_8HnCIhIz_HKtASTdt6lsiRDha_-1hc
+import { Helmet } from "react-helmet";
 
 import "./form.css";
+import Leaflet from "./Leaflet";
 
 const Form = ({ currentId, setCurrentId }) => {
   const user = JSON.parse(localStorage.getItem("profile"));
   const [error, setError] = useState("");
+  const [location, setLocation] = useState("");
+
+  const [title, setTitle] = useState("Create");
 
   const [postData, setPostDate] = useState({
     creatorId: "",
     creatorType: "",
-    title: "",
+    title: "1 BHK",
     location: "",
     coords: "",
     people: "",
@@ -38,27 +41,35 @@ const Form = ({ currentId, setCurrentId }) => {
     if (post) setPostDate(post);
   }, [post]);
 
-  const handleLocation = (e) => {
-    e.preventDefault();
-
-    navigator.geolocation.getCurrentPosition(function (position) {
-      setPostDate({
-        ...postData,
-        coords: `${position.coords.latitude},${position.coords.longitude}`,
+  useEffect(() => {
+    if (!currentId) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        const { latitude, longitude } = position.coords;
+        //setLocation({ latitude, longitude });
+        setPostDate({ ...postData, coords: `${latitude},${longitude}` });
       });
-    });
-  };
+      setTitle("Create");
+    }
+    if (currentId) {
+      setTitle("Update");
+    }
+  }, [post, currentId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!postData.image && user.result.userType === "owner") {
+    if (
+      !postData.image &&
+      !postData.image2 &&
+      user.result.userType === "owner"
+    ) {
       setError("Image is required");
     } else {
       if (currentId) {
         dispatch(
           updatePost(currentId, {
             ...postData,
+            coords: `${location.lat},${location.lng}`,
             creatorName: user?.result?.name,
             creatorType: user?.result?.userType,
           })
@@ -67,6 +78,7 @@ const Form = ({ currentId, setCurrentId }) => {
         dispatch(
           createPost({
             ...postData,
+            coords: `${location.lat},${location.lng}`,
             creatorName: user?.result?.name,
             creatorType: user?.result?.userType,
           })
@@ -91,13 +103,22 @@ const Form = ({ currentId, setCurrentId }) => {
       discription: "",
       negotiable: "negotiable",
       image: "",
+      image2: "",
     });
   };
 
   return (
     <div>
+      <Helmet>
+        <title>{title} | RentHub</title>
+      </Helmet>
       <form onSubmit={handleSubmit} className="post-form">
-        {error && <h3 className="error-message">{error}</h3>}
+        {error && (
+          <div className="error-box">
+            <h2 className="error-message">{error}</h2>
+            <h1 onClick={() => setError("")}>&#10008;</h1>
+          </div>
+        )}
 
         <h1>{currentId ? "Update" : "Create"} Post</h1>
         <p>Select a title</p>
@@ -116,7 +137,8 @@ const Form = ({ currentId, setCurrentId }) => {
           name="amount"
           label="amount"
           placeholder="amount"
-          value={postData.amount}
+          min={0}
+          value={postData?.amount}
           onChange={(e) => setPostDate({ ...postData, amount: e.target.value })}
           required
         />
@@ -173,12 +195,11 @@ const Form = ({ currentId, setCurrentId }) => {
 
         {user?.result.userType === "owner" ? (
           <>
-            <p>Geo Location</p>
-            <button onClick={handleLocation}>
-              Current location: {postData.coords}
-            </button>
-            {/* <div className="map"></div> */}
-            <Map />
+            <p>Geo Location: </p>
+
+            <div className="map">
+              <Leaflet setLocation={setLocation} />
+            </div>
 
             <p>Add images of Rooms</p>
             <FileBase
@@ -186,6 +207,13 @@ const Form = ({ currentId, setCurrentId }) => {
               multiple={false}
               onDone={({ base64 }) =>
                 setPostDate({ ...postData, image: base64 })
+              }
+            />
+            <FileBase
+              type="file"
+              multiple={false}
+              onDone={({ base64 }) =>
+                setPostDate({ ...postData, image2: base64 })
               }
             />
           </>

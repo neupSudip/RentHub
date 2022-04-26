@@ -33,14 +33,14 @@ io.on("connection", (socket) => {
   });
 
   //send and get message
-  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+  socket.on("sendMessage", ({ senderId, receiverId, text, time }) => {
     console.log("line 37. ", users);
-    console.log("line 38.", senderId, receiverId, text);
     const user = getUser(receiverId);
     console.log("line 40", user);
-    io.to(user.socketId).emit("getMessage", {
+    io.to(user?.socketId).emit("getMessage", {
       senderId,
       text,
+      time,
     });
   });
 

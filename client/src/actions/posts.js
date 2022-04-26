@@ -93,7 +93,10 @@ export const savePost = (userId, postId) => async (dispatch) => {
 export const getSavedPosts = (userId, setLoading) => async (dispatch) => {
   try {
     const { data } = await api.getSavedPosts(userId);
-    dispatch({ type: "GET_SAVED_POST", payload: data });
+    console.log(data);
+
+    dispatch({ type: "GET_SAVED_POST", payload: data[0] });
+    dispatch({ type: "BOOK_POST", payload: data[1] });
     setLoading(false);
   } catch (error) {
     console.log(error.response?.data.message);
@@ -106,5 +109,23 @@ export const removeSavedPost = (userId, postId) => async (dispatch) => {
     dispatch({ type: "REMOVE_SAVED_POST", payload: postId });
   } catch (error) {
     console.log(error.response?.data.message);
+  }
+};
+
+export const hidePost = (postId) => async (dispatch) => {
+  try {
+    await api.hidePost(postId);
+    dispatch({ type: "HIDE_POST", payload: postId });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const bookPost = (userId, postId) => async (dispatch) => {
+  try {
+    const { data } = api.bookPost(userId, postId);
+    dispatch({ type: "BOOK_POST", payload: data });
+  } catch (error) {
+    console.log(error);
   }
 };

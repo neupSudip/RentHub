@@ -4,6 +4,11 @@ import Post from "./Post";
 import { useNavigate } from "react-router-dom";
 import { getPosts, getPostsBySearch } from "../../actions/posts";
 import Pagination from "./Pagination";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
+import { Helmet } from "react-helmet";
+
+import "./posts.css";
 
 const Posts = () => {
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
@@ -37,13 +42,17 @@ const Posts = () => {
     }
   };
 
+  const handleKey = async (e) => {
+    if (e.charCode === 13) {
+      searchPosts();
+    }
+  };
+
   const { posts } = useSelector((state) => state.posts);
 
   const totalPosts = posts?.length;
-
   const lastPost = page * 2;
   const firstPost = lastPost - 2;
-
   const displayPosts = posts?.slice(firstPost, lastPost);
 
   const paginate = (page) => {
@@ -52,6 +61,9 @@ const Posts = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>RentHub.com</title>
+      </Helmet>
       <div className="search-bar">
         <div className="search-fields">
           <input
@@ -60,6 +72,7 @@ const Posts = () => {
             placeholder="Location"
             label="Location"
             value={location}
+            onKeyPress={handleKey}
             onChange={(e) => setLocation(e.target.value)}
           />
           <input
@@ -68,6 +81,7 @@ const Posts = () => {
             placeholder="Rooms/Titles"
             label="Rooms"
             value={title}
+            onKeyPress={handleKey}
             onChange={(e) => setTitle(e.target.value)}
           />
           <input
@@ -76,6 +90,7 @@ const Posts = () => {
             placeholder="Tags"
             label="Tags"
             value={tag}
+            onKeyPress={handleKey}
             onChange={(e) => setTag(e.target.value)}
           />
           <button onClick={searchPosts} className="search-button">
@@ -84,7 +99,11 @@ const Posts = () => {
         </div>
       </div>
       {loading ? (
-        <h1>loading ....</h1>
+        <CircularProgress
+          style={{ position: "absolute", top: "50vh", left: "50%" }}
+          size="8rem"
+          sx={{ color: "green" }}
+        />
       ) : (
         <div className="cards">
           {!displayPosts ? (

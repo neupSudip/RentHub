@@ -17,6 +17,10 @@ module.exports.auth = (req, res, next) => {
         req.userId = decodedData?.sub;
       }
 
+      if (decodedData.exp < decodedData.iat) {
+        return "expired";
+      }
+
       return next();
     } else {
       res.redirect("http://localhost:5000");

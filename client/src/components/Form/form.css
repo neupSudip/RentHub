@@ -1,5 +1,5 @@
 .post-form {
-  max-width: 30rem;
+  max-width: 35rem;
   box-shadow: 0.5px 0.5px 0.8rem 0.5px rgb(148, 144, 144);
   margin: 3rem auto;
   display: flex;
@@ -14,7 +14,9 @@
   text-align: center;
 }
 
-.post-form > *:not(p) {
+.post-form textarea,
+.post-form select,
+.post-form input {
   margin-bottom: 1rem;
   height: 3rem;
   background-color: #fbfbfb;
@@ -24,6 +26,12 @@
   margin-bottom: -1px;
   font-size: 1.3rem;
   color: rgb(61, 6, 6);
+}
+
+.get-location {
+  box-shadow: 0.5px 0.5px 0.8rem 0.5px rgb(148, 144, 144);
+  padding: 5px 0px 5px 4px;
+  cursor: pointer;
 }
 
 .post-form input {
@@ -51,30 +59,46 @@ input:focus,
   overflow: hidden;
 }
 
-button:hover {
-  cursor: pointer;
-  box-shadow: 2px 2px 1px rgb(148, 144, 144);
-  color: rgb(98, 96, 96);
-  background-color: rgb(204, 203, 203);
+.post-form button:hover {
+  color: rgb(255, 255, 255);
+  background-color: rgb(74, 62, 62);
 }
 
-.btn-reset {
-  background-image: linear-gradient(
-    rgb(226, 63, 63, 0.5),
-    rgb(218, 135, 135, 0.5),
-    rgb(235, 81, 81, 0.5)
-  );
+.post-form .btn-reset {
+  background-color: rgb(188, 36, 36);
 }
 
-.btn-submit {
-  background-image: linear-gradient(
-    rgb(82, 63, 226, 0.5),
-    rgb(152, 135, 218, 0.5),
-    rgb(143, 81, 235, 0.5)
-  );
+.post-form .btn-submit {
+  background-color: rgb(26, 130, 95);
+  color: aliceblue;
 }
 
 .map {
-  height: 500px;
+  height: 15rem;
   width: 100%;
+  margin-bottom: 10px;
+}
+
+.error-box {
+  position: sticky;
+  width: fit-content;
+  margin: auto;
+  right: 0;
+  left: 0;
+  top: 10vh;
+  display: flex;
+  justify-content: end;
+  background-color: rgb(48, 44, 44, 0.8);
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: rgb(255, 255, 255);
+  align-items: center;
+  margin-bottom: 5px;
+}
+.error-box h1 {
+  height: 1rem;
+  margin-top: -22px;
+  margin-left: 20px;
+  cursor: pointer;
 }

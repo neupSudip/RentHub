@@ -29,6 +29,9 @@ const userSchema = mongoose.Schema({
   savedPost: {
     type: [String],
   },
+  bookedPosts: {
+    type: [String],
+  },
 });
 
 const User = mongoose.model("User", userSchema);

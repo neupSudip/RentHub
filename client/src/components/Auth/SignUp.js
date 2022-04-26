@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { GoogleLogin } from "react-google-login";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import FileBase from "react-file-base64";
+import { Helmet } from "react-helmet";
 import PasswordChecklist from "react-password-checklist";
 
 import { signup } from "../../actions/auth";
@@ -27,6 +28,7 @@ function SignUp() {
 
   const dispatch = useDispatch();
   const history = useNavigate();
+  const autoFocus = useCallback((el) => (el ? el.focus() : null), []);
 
   const handleChange = (e) => {
     setFormData({ ...formDate, [e.target.name]: e.target.value });
@@ -41,6 +43,7 @@ function SignUp() {
   };
 
   const googleSuccess = async (res) => {
+    console.log(res);
     const result = res?.profileObj;
 
     switchAuth();
@@ -78,10 +81,24 @@ function SignUp() {
     }
   };
 
+  const handleKey = async (e) => {
+    if (e.charCode === 13) {
+      handleSubmit(e);
+    }
+  };
+
   return (
     <div>
+      <Helmet>
+        <title>SignUp | RentHub</title>
+      </Helmet>
       <form className="form-container" onSubmit={handleSubmit}>
-        {error && <h3 className="error-message">{error}</h3>}
+        {error && (
+          <div className="error-box">
+            <h2 className="error-message">{error}</h2>
+            <h1 onClick={() => setError("")}>&#10008;</h1>
+          </div>
+        )}
         {isVerify ? (
           <>
             <p>Create Password</p>
@@ -92,6 +109,7 @@ function SignUp() {
                 placeholder="Password*"
                 label="Password"
                 onChange={handleChange}
+                ref={autoFocus}
                 required
               />
 
@@ -109,6 +127,7 @@ function SignUp() {
                   capital: "Must have a capital letter",
                   lowercase: "Must have a lowercase letter",
                 }}
+                onKeyPress={handleKey}
               />
             </div>
             <select
@@ -134,6 +153,7 @@ function SignUp() {
               placeholder="First Name*"
               label="First Name"
               onChange={handleChange}
+              ref={autoFocus}
               required
             />
             <p>Last Name</p>
@@ -190,6 +210,7 @@ function SignUp() {
                   capital: "Must have a capital letter",
                   lowercase: "Must have a lowercase letter",
                 }}
+                onKeyPress={handleKey}
               />
             </div>
 
@@ -210,6 +231,7 @@ function SignUp() {
               clientId={AUTH_TOKEN}
               render={(renderProps) => (
                 <button
+                  className="google-btn"
                   onClick={renderProps.onClick}
                   disabled={renderProps.disabled}
                 >
@@ -223,7 +245,9 @@ function SignUp() {
             />
             <span className="switch-auth">
               <Link to="/login">
-                Already have account? &nbsp;&nbsp;&nbsp;&nbsp;Sign in
+                Already have account?
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sign
+                in
               </Link>
             </span>
           </>

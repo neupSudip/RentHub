@@ -69,6 +69,8 @@ const App = () => {
           element={
             !user ? (
               <Navigate to="/welcome" />
+            ) : !currentId ? (
+              <Navigate to="/profile" />
             ) : (
               <Form currentId={currentId} setCurrentId={setCurrentId} />
             )

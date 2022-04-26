@@ -43,11 +43,30 @@ export default (state = [], action) => {
         ),
       };
     case "REMOVE_SAVED_POST":
+      console.log(state.savedPosts);
       return {
         savedPosts: state.savedPosts.filter(
           (post) => post._id !== action.payload
         ),
       };
+
+    case "HIDE_POST":
+      let newPosts = [];
+      state.userPosts.map((post) => {
+        if (post._id === action.payload) {
+          post.status = !post.status;
+          newPosts.push(post);
+        } else {
+          newPosts.push(post);
+        }
+      });
+      return {
+        userPosts: newPosts,
+      };
+
+    case "BOOK_POST":
+      return { ...state, bookedPosts: action.payload };
+
     default:
       return state;
   }

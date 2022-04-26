@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { useParams, useNavigate } from "react-router-dom";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { Helmet } from "react-helmet";
 import {
   getPost,
   getPostsBySearch,
@@ -10,9 +12,9 @@ import {
 } from "../../actions/posts";
 import { createConversation } from "../../actions/message";
 import Comment from "./Comment";
+import Leaflet from "./Leaflet";
 
 import requiredImage from "../../images/required.jpg";
-import Map from "../GoogleMap/Map";
 
 import "./postdetails.css";
 
@@ -37,7 +39,7 @@ const PostDetail = () => {
 
   const members = [user?._id, post?.creatorId];
 
-  const createConversations = async () => {
+  const createConversations = () => {
     dispatch(createConversation(members, history));
   };
 
@@ -65,49 +67,77 @@ const PostDetail = () => {
     dispatch(savePost(user?._id, post?._id));
   };
 
-  // const { savedPosts } = useSelector((state) => state.posts);
-
-  // console.log(savedPosts.indexOf(id) > -1);
-
   return (
     <div className="post-details">
-      {loading && <h1>Loading ....</h1>}
+      {loading && (
+        <CircularProgress
+          style={{ position: "absolute", top: "50vh", left: "50%" }}
+          size="8rem"
+          sx={{ color: "green" }}
+        />
+      )}
 
       {!loading && !post && <h1>Page not found</h1>}
       {post && (
         <>
-          <h1 className="creator-name">
-            {`${post.creatorName} || ${moment(post.createdAt).format(
-              "DD MMM, YYYY"
-            )}`}{" "}
-          </h1>
+          <Helmet>
+            <title>{post?.title} | RentHub</title>
+          </Helmet>
 
-          {post.creatorId !== user._id && (
-            <h2 onClick={() => createConversations()}>message</h2>
-          )}
+          <div className="top-name-message">
+            <h1 className="creator-name">
+              {`${post.creatorName} || ${moment(post.createdAt).format(
+                "DD MMM, YYYY"
+              )}`}{" "}
+            </h1>
+
+            {post.creatorId !== user._id && (
+              <button onClick={() => createConversations()}>message</button>
+            )}
+          </div>
 
           <div className="detail-img">
             {post.image ? (
-              <img src={post.image} alt={post.title} />
+              <>
+                <img src={post.image} alt={post.title} />
+                <img src={post.image2} alt={post.title} />
+              </>
             ) : (
               <img src={requiredImage} alt={post.title} />
             )}
           </div>
-          <h1> {post.title}</h1>
 
-          <h2> {`NRP ${post.amount} (${post.negotiable})`}</h2>
-          <h2>{post.location}</h2>
-          <div className="location-booking">
-            <div className="geo-location">
-              {/* <Map cords={post.cords} /> */}
+          <div className="title-booking">
+            <div className="title-section">
+              <h1>
+                {post.people
+                  ? `** ${post.title} for ${post.people} people **`
+                  : `${post.title}`}
+              </h1>
+
+              <h2> {`NRP ${post.amount} (${post.negotiable})`}</h2>
+              <h2>{`Near ${post.location}`}</h2>
             </div>
-            {post.creatorId !== user._id && (
+
+            {post.creatorId !== user._id && !post.booked && (
               <div className="booking-section">
                 <button onClick={handleSavePost}>save post</button>
               </div>
             )}
+            {post.booked && (
+              <h3 className="booked-info">
+                This post has been booked by user. If you want to know further
+                details, please contact the owner of the post.
+              </h3>
+            )}
           </div>
+
           <p className="discription">{post.discription}</p>
+          {post?.coords && post?.coords !== "undefined,undefined" && (
+            <div className="geo-location">
+              <Leaflet location={post.coords} />
+            </div>
+          )}
           <h2 className="facilities">Facilities: </h2>
           <div className="tags">
             {post.tags.map((tag, i) => (

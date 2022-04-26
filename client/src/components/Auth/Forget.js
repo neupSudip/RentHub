@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import PasswordChecklist from "react-password-checklist";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { forgetPassword } from "../../actions/auth";
 import "./auth.css";
 
@@ -51,8 +52,14 @@ const Forget = () => {
 
   return (
     <div className="form-container">
+      <Helmet>
+        <title>Forget Password</title>
+      </Helmet>
       {message && (
-        <h2 style={{ color: "red", textAlign: "center" }}>{message}</h2>
+        <div className="error-box">
+          <h2 className="error-message">{message}</h2>
+          <h1 onClick={() => setMessage("")}>&#10008;</h1>
+        </div>
       )}
       <h2 style={{ textAlign: "center" }}>Create Password</h2>
       <div className="password">
@@ -80,7 +87,7 @@ const Forget = () => {
         />
       </div>
 
-      <button className="btn-signup" onClick={handleClick}>
+      <button className="btn-reset" onClick={handleClick}>
         Reset Password
       </button>
     </div>

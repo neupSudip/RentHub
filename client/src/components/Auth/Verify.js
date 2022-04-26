@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { userVerify } from "../../actions/auth";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import "./auth.css";
 
 const Verify = () => {
   const [message, setMessage] = useState("");
@@ -28,9 +30,19 @@ const Verify = () => {
 
   return (
     <div style={{ textAlign: "center" }}>
-      {message && <h2 style={{ color: "red" }}>{message}</h2>}
+      <Helmet>
+        <title>Verify | RentHub</title>
+      </Helmet>
+      {message && (
+        <div className="error-box">
+          <h2 className="error-message">{message}</h2>
+          <h1 onClick={() => setMessage("")}>&#10008;</h1>
+        </div>
+      )}
 
-      <button onClick={handleClick}>Verify</button>
+      <button className="btn-reset" onClick={handleClick}>
+        Verify
+      </button>
       <br />
       <br />
       <h1>Please click verify button to verify</h1>
