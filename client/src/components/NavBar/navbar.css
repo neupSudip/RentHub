@@ -9,23 +9,19 @@
 html {
   font-family: sans-serif;
   font-size: 10px;
-  /* background-image: url("../../images/img2.jpg"); */
-  /* background-repeat: no-repeat;
-  background-size: 100% 100%;
-  background-attachment: fixed;
-  max-width: 1200px;
-  margin: 0px auto; */
 }
 
 .nav-logo {
-  width: 8rem;
+  width: 13rem;
 }
 
 .profile-image {
   background-color: darkgray;
   text-align: center;
   font-weight: bold;
-  width: 4rem;
+  width: 100%;
+  width: 5rem;
+  max-height: 5rem;
   border-radius: 100%;
 }
 
@@ -41,7 +37,10 @@ a {
   display: flex;
   align-items: center;
   font-size: 2rem;
-  margin-bottom: 2rem;
+}
+
+.nav-bar a:hover {
+  color: rgb(23, 23, 176);
 }
 
 .left-nav {
@@ -68,4 +67,10 @@ a {
 .signin-btn:hover {
   color: rgb(255, 255, 255);
   background-color: rgb(74, 62, 62);
+}
+
+@media all and (max-width: 700px) {
+  html {
+    font-size: 9px;
+  }
 }

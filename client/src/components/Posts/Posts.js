@@ -9,6 +9,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { Helmet } from "react-helmet";
 
 import "./posts.css";
+import Footer from "../Footer/Footer";
 
 const Posts = () => {
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
@@ -51,13 +52,15 @@ const Posts = () => {
   const { posts } = useSelector((state) => state.posts);
 
   const totalPosts = posts?.length;
-  const lastPost = page * 2;
-  const firstPost = lastPost - 2;
+  const lastPost = page * 8;
+  const firstPost = lastPost - 8;
   const displayPosts = posts?.slice(firstPost, lastPost);
 
   const paginate = (page) => {
     setPage(page);
   };
+
+  console.log(displayPosts);
 
   return (
     <div>
@@ -106,14 +109,16 @@ const Posts = () => {
         />
       ) : (
         <div className="cards">
-          {!displayPosts ? (
-            <h1>Sorry !! No Posts Found </h1>
+          {!displayPosts.length ? (
+            <h1 style={{ height: "20vh" }}>Sorry !! No Posts Found </h1>
           ) : (
             displayPosts?.map((post) => <Post key={post._id} post={post} />)
           )}
         </div>
       )}
       <Pagination totalPosts={totalPosts} paginate={paginate} />
+
+      <Footer />
     </div>
   );
 };

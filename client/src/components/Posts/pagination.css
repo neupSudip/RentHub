@@ -6,6 +6,10 @@
   margin-bottom: 10px;
 }
 
+.pagination li {
+  display: inline;
+}
+
 .pagination a {
   display: inline;
   padding: 5px 10px;

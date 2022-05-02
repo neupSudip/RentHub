@@ -56,9 +56,9 @@
 }
 
 .card {
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  max-width: 30rem;
   margin-bottom: 2rem;
-  border-radius: 5px 5px 100px 100px;
+  border-radius: 5px 5px 100% 100%;
 }
 
 .card > * {
@@ -69,7 +69,7 @@
   background-color: rgb(250, 241, 241);
   color: rgb(71, 59, 59);
   padding: 1rem 0px;
-  border-radius: 0px 0px 100px 100px;
+  border-radius: 0px 0px 50px 50px;
 }
 
 .image {

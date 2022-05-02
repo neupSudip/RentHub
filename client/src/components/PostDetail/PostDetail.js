@@ -14,7 +14,7 @@ import { createConversation } from "../../actions/message";
 import Comment from "./Comment";
 import Leaflet from "./Leaflet";
 
-import requiredImage from "../../images/required.jpg";
+import requiredImage from "../../images/require.png";
 
 import "./postdetails.css";
 
@@ -24,6 +24,8 @@ const PostDetail = () => {
   const history = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
+
+  const [saved, setSaved] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
 
@@ -65,6 +67,7 @@ const PostDetail = () => {
 
   const handleSavePost = () => {
     dispatch(savePost(user?._id, post?._id));
+    setSaved(true);
   };
 
   return (
@@ -119,9 +122,15 @@ const PostDetail = () => {
               <h2>{`Near ${post.location}`}</h2>
             </div>
 
-            {post.creatorId !== user._id && !post.booked && (
+            {post.creatorId !== user._id && !post.booked && !saved && (
               <div className="booking-section">
                 <button onClick={handleSavePost}>save post</button>
+              </div>
+            )}
+
+            {saved && (
+              <div className="booking-section">
+                <button>Post saved</button>
               </div>
             )}
             {post.booked && (
@@ -151,12 +160,12 @@ const PostDetail = () => {
 
       {/* Recommendation Section */}
 
+      <h1 style={{ margin: "2rem auto" }}>Recommended posts</h1>
       {recommend?.length ? (
         <>
-          <h1>Recommendation</h1>
           <div className="recommended-posts">
             {/* {(recommend.length = 4)} */}
-            {recommend?.map((post) => (
+            {recommend?.slice(0, 4).map((post) => (
               <div
                 className="recommended-post"
                 key={post._id}
@@ -184,7 +193,9 @@ const PostDetail = () => {
           </div>
         </>
       ) : (
-        <h1>Sorry !! No related posts found....</h1>
+        <h1 style={{ textAlign: "center", margin: "2rem auto" }}>
+          Sorry !! No related posts found....
+        </h1>
       )}
     </div>
   );

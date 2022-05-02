@@ -1,7 +1,7 @@
 .form-container {
-  max-width: 30rem;
+  max-width: 35rem;
   box-shadow: 0.5px 0.5px 0.8rem 0.5px rgb(148, 144, 144);
-  margin: 3rem auto;
+  margin: 0px auto 3rem auto;
   display: flex;
   flex-direction: column;
   padding: 1rem;
@@ -58,6 +58,7 @@
 .form-container button:hover {
   color: rgb(255, 255, 255);
   background-color: rgb(74, 62, 62);
+  cursor: pointer;
 }
 
 .password input {

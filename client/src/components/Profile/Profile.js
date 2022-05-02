@@ -33,13 +33,13 @@ function Profile({ setCurrentId, setCurrentUser }) {
 
   useEffect(() => {
     if (removeId) {
-      dispatch(getSavedPosts(user?.result._id, setLoading));
       dispatch({ type: "REMOVE_SAVED_POST", payload: removeId });
+      // dispatch(getSavedPosts(user?.result._id, setLoading));
       setRemoveId(null);
     }
 
     if (postId) {
-      dispatch(getUserPosts(user?.result._id, setLoading));
+      // dispatch(getUserPosts(user?.result._id, setLoading));
       dispatch({ type: "DELETE", payload: postId });
       setPostId(null);
     }
@@ -76,7 +76,7 @@ function Profile({ setCurrentId, setCurrentUser }) {
         Log Out
       </button>
 
-      {user.type === "renter" && (
+      {user?.result.userType === "renter" && (
         <button className="book-show-btn" onClick={handleShow}>
           Booked posts
         </button>
@@ -128,7 +128,7 @@ function Profile({ setCurrentId, setCurrentUser }) {
             {type === "user" ? (
               <>
                 {!userPosts?.length ? (
-                  <h1>There is no userPosts</h1>
+                  <h1 style={{ margin: "2rem auto" }}>There is no userPosts</h1>
                 ) : (
                   userPosts?.map((post) => (
                     <Post
@@ -154,7 +154,9 @@ function Profile({ setCurrentId, setCurrentUser }) {
                     />
                   ))
                 ) : (
-                  <h1>There is no saved Posts</h1>
+                  <h1 style={{ margin: "2rem auto" }}>
+                    There is no saved Posts
+                  </h1>
                 )}
               </>
             )}

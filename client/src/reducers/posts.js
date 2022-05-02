@@ -43,7 +43,6 @@ export default (state = [], action) => {
         ),
       };
     case "REMOVE_SAVED_POST":
-      console.log(state.savedPosts);
       return {
         savedPosts: state.savedPosts.filter(
           (post) => post._id !== action.payload
@@ -54,6 +53,7 @@ export default (state = [], action) => {
       let newPosts = [];
       state.userPosts.map((post) => {
         if (post._id === action.payload) {
+          console.log(post.status);
           post.status = !post.status;
           newPosts.push(post);
         } else {

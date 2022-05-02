@@ -1,0 +1,49 @@
+.our-journey {
+  width: 100%;
+  max-width: 100rem;
+  margin: 1rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.journey,
+.journey-img {
+  flex: 1;
+  text-align: justify;
+  font-size: 1.5rem;
+}
+
+.journey {
+  padding: 1rem;
+  /* word-spacing: 1rem; */
+  line-height: 2rem;
+  /* box-shadow: 0px 0.1px 1rem 1px rgb(243, 241, 241); */
+}
+
+.p-tag {
+  color: blue;
+  font-weight: 600;
+}
+.p-tag:hover {
+  text-decoration: underline;
+}
+.journey-img img {
+  width: 100%;
+  max-height: 40rem;
+  /* border-radius: 5px; */
+  color: white;
+  /* box-shadow: 0px 0.1px 0.5rem 2px rgb(176, 164, 164); */
+}
+
+.trending h3,
+.our-journey h3 {
+  margin: 0.5rem 0;
+  font-size: 2.5rem;
+}
+
+@media all and (max-width: 750px) {
+  .our-journey {
+    flex-direction: column;
+  }
+}

@@ -10,7 +10,6 @@ const { use } = require("../routes/user");
 
 module.exports.signin = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
   try {
     const user = await User.findOne({ email });
 
@@ -101,18 +100,21 @@ module.exports.signup = async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRES }
     );
 
-    const hex = crypto.randomBytes(20).toString("hex");
-    const hash = result._id.toString().concat(hex);
+    // if (!isVerified) {
+    //   const hex = crypto.randomBytes(20).toString("hex");
+    //   const hash = result._id.toString().concat(hex);
 
-    const temp = new Temp({
-      userId: result._id.toString(),
-      hash: hash,
-    });
+    //   const temp = new Temp({
+    //     userId: result._id.toString(),
+    //     hash: hash,
+    //   });
 
-    await temp.save();
+    //   await temp.save();
 
-    const html = `<h1>Please verify your email for RentHub.com by below link<h1/><br/><p>http://localhost:3000/verify/${hash}<p/>`;
-    sendEmail(email, html, "Email Verification");
+    //   const html = `<h1>Please verify your email for RentHub.com by below link<h1/><br/><p>http://localhost:3000/verify/${hash}<p/>`;
+
+    //   sendEmail(email, html, "Email Verification");
+    // }
 
     const storage = {
       _id: result._id,

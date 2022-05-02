@@ -36,7 +36,8 @@ function Login() {
   const googleSuccess = async (res) => {
     const email = res?.profileObj?.email;
     try {
-      dispatch(signingoogle({ email }, history));
+      const response = await dispatch(signingoogle({ email }, history));
+      setError(response);
     } catch (error) {
       console.log(error);
     }

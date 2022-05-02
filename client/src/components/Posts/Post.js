@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import requiredImage from "../../images/required.jpg";
+import requiredImage from "../../images/require.png";
 
 import "./posts.css";
 

@@ -19,8 +19,7 @@ export const signingoogle = (formData, history) => async (dispatch) => {
     history("/");
     window.location.reload();
   } catch (error) {
-    console.log(error);
-    return error.response?.data.message;
+    return error.response.data.message;
   }
 };
 

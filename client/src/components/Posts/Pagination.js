@@ -5,7 +5,7 @@ import "./pagination.css";
 const Pagination = ({ totalPosts, paginate }) => {
   const pageNumbers = [];
 
-  for (let i = 1; i <= Math.ceil(totalPosts / 2); i++) {
+  for (let i = 1; i <= Math.ceil(totalPosts / 8); i++) {
     pageNumbers.push(i);
   }
 

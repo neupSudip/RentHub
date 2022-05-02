@@ -28,6 +28,7 @@ const Form = ({ currentId, setCurrentId }) => {
     discription: "",
     negotiable: "negotiable",
     image: "",
+    image2: "",
   });
 
   const post = useSelector((state) =>
@@ -85,7 +86,7 @@ const Form = ({ currentId, setCurrentId }) => {
         );
       }
       reset();
-      history("/");
+      history("/profile");
     }
   };
 
@@ -94,7 +95,7 @@ const Form = ({ currentId, setCurrentId }) => {
     setPostDate({
       creatorId: "",
       creatorType: "",
-      title: "",
+      title: "1 BHK",
       location: "",
       coords: "",
       people: "",

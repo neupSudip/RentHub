@@ -40,6 +40,7 @@ const SavedPosts = ({ post, userId, setRemoveId }) => {
             dispatch(bookPost(userId, post._id));
             setRemoveId(post._id);
             setMessage("Payment Successfull");
+            console.log("successfull");
           })
           .catch((error) => {
             console.log(error);
@@ -68,9 +69,9 @@ const SavedPosts = ({ post, userId, setRemoveId }) => {
   };
 
   const handleCheckout = () => {
-    dispatch(bookPost(userId, post._id));
-    setRemoveId(post._id);
-    // checkout.show({ amount: 1000 });
+    // dispatch(bookPost(userId, post._id));
+    // setRemoveId(post._id);
+    checkout.show({ amount: 10000 });
   };
 
   return (
